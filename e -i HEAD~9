@@ -1,0 +1,60 @@
+[33mcommit 8503187cbcf5bd88a8bd5dab94dc14b60bbf48cc[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31mpc/main[m[33m)[m
+Merge: c2acc1f c70e33d
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:33:25 2024 +0200
+
+    Merge branch 'main' of https://github.com/szymondlugolecki/lab-next
+
+[33mcommit c2acc1fbb223d116c6553ebbff7ed162bb8300cd[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:26:25 2024 +0200
+
+    init files
+
+[33mcommit c70e33d8b204c9d31a03c5d91462fe117a75abe6[m[33m ([m[1;31mpc/dev[m[33m, [m[1;32mdev[m[33m)[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:26:25 2024 +0200
+
+    init files
+
+[33mcommit 39561af7a86d826ff1a5236f67cc2e4a2bd7566a[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:25:56 2024 +0200
+
+    init
+
+[33mcommit 2d17b367661d964b524a3536971b2ad9d4ff822d[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:22:30 2024 +0200
+
+    init
+
+[33mcommit 2f37d9277398a635d0bafea23702624539b3d511[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:22:15 2024 +0200
+
+    chore: Remove unnecessary files and configurations
+
+[33mcommit d03fc47b16e08d6fa40ec03b405ad8de8e24f036[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:21:32 2024 +0200
+
+    chore: Include .env file in .gitignore
+
+[33mcommit cd0b3c94c176af44e79ebea084dad8fad9ec38d2[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:17:05 2024 +0200
+
+    chore: Update .gitignore to include .env file
+
+[33mcommit 1f8093b3d5d3db7df10b736f057eb236b8acbd2e[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:14:38 2024 +0200
+
+    chore: Update .gitignore to include .env file
+
+[33mcommit 533f95cbc585a3df814a4a02f0e801ce19d27937[m
+Author: szymondlugolecki <szymon.dlugolecki77@gmail.com>
+Date:   Fri Jun 7 00:06:22 2024 +0200
+
+    init

@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/types/*": ["./src/lib/types/*"],
+      "@/types": ["./src/lib/types"],
+      "@/utils/*": ["./src/lib/utils/*"],
+      "@/utils": ["./src/lib/utils"],
+      "@/constants/*": ["./src/lib/utils/constants/*"],
+      "@/constants": ["./src/lib/utils/constants"],
+      "@/auth/*": ["./src/lib/auth/*"],
+      "@/auth": ["./src/lib/auth"],
+      "@/db/*": ["./src/lib/db/*"],
+      "@/db": ["./src/lib/db"]
+    },
+    "types": ["@cloudflare/workers-types/2023-07-01"]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/lib/types/env.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}
