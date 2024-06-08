@@ -1,6 +1,7 @@
 "use client";
 
-import { EditorProvider } from "@tiptap/react";
+import { Root, createRoot } from "react-dom/client";
+import { Editor, EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { CustomMenuBar } from "./custom-menu-bar";
 
@@ -8,6 +9,7 @@ import { CustomMenuBar } from "./custom-menu-bar";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
 import CharacterCount from "@tiptap/extension-character-count";
 import Typography from "@tiptap/extension-typography";
+import Emoji, { gitHubEmojis } from "@tiptap-pro/extension-emoji";
 
 // Marks
 import Highlight from "@tiptap/extension-highlight";
@@ -28,14 +30,124 @@ import TaskList from "@tiptap/extension-task-list";
 import Youtube from "@tiptap/extension-youtube";
 import Image from "@tiptap/extension-image";
 import { CustomBubbleMenu } from "./custom-bubble-menu";
+import Mention from "@tiptap/extension-mention";
 
-export default function Tiptap() {
+import { mentionSuggestionOptions } from "./mentionSuggestionOptions";
+import { Input } from "@/components/ui/input";
+import { useFormStatus } from "react-dom";
+import type { JSONContent } from "@tiptap/react";
+import { CustomEditorMenu } from "./custom-editor-menu";
+
+interface TipTapProps {
+  contentJSON: JSONContent;
+  setContentJSON: (content: JSONContent) => void;
+}
+
+export default function Tiptap({ contentJSON, setContentJSON }: TipTapProps) {
+  const { pending } = useFormStatus();
+  console.log("pending", pending);
+
   const extensions = [
     // Extensions
     StarterKit,
     BubbleMenu,
     CharacterCount,
     Typography,
+    Emoji.configure({
+      emojis: gitHubEmojis,
+      enableEmoticons: true,
+    }),
+    Mention.configure({
+      HTMLAttributes: {
+        class: "mention",
+      },
+      suggestion: mentionSuggestionOptions,
+
+      // {
+      // items: ({ query }) =>
+      //   users
+      //     .filter((item) =>
+      //       item.toLowerCase().startsWith(query.toLowerCase())
+      //     )
+      //     .slice(0, 5),
+      // render: () => {
+      //   let component: ReactRenderer;
+      //   let root: Root | null = null;
+      //   let popup: HTMLElement | null = null;
+
+      //   return {
+      //     onStart: (props) => {
+      //       component = new ReactRenderer(MentionPopover, {
+      //         props,
+      //         editor: props.editor,
+      //       });
+
+      //       if (!props.clientRect) {
+      //         return;
+      //       }
+
+      //       const popoverContainer = document.createElement("div");
+      //       document.body.appendChild(popoverContainer);
+      //       popup = popoverContainer;
+
+      //       root = createRoot(popoverContainer);
+      //       root.render(
+      //         <Popover open={true} defaultOpen={true}>
+      //           <PopoverContent className="w-32 h-96 bg-red-500">
+      //             mentions! mentions! mentions! mentions! mentions! mentions!
+      //             mentions! mentions!{" "}
+      //           </PopoverContent>
+      //         </Popover>
+      //       );
+      //     },
+
+      //     onUpdate(props) {
+      //       component.updateProps(props);
+
+      //       if (!props.clientRect) {
+      //         return;
+      //       }
+
+      //       // popup[0].setProps({
+      //       //   getReferenceClientRect: props.clientRect,
+      //       // });
+
+      //       if (root && popup) {
+      //         root.render(
+      //           <Popover open={true} defaultOpen={true}>
+      //             <PopoverContent className="w-32 h-96 bg-red-500">
+      //               mentions! mentions! mentions! mentions! mentions!
+      //               mentions! mentions! mentions!{" "}
+      //             </PopoverContent>
+      //           </Popover>
+      //         );
+      //       }
+      //     },
+
+      //     onKeyDown(props) {
+      //       if (props.event.key === "Escape" && popup && root) {
+      //         root.unmount();
+      //         document.body.removeChild(popup);
+      //         popup = null;
+      //         return true;
+      //       }
+
+      //       // @ts-ignore
+      //       return component.ref?.onKeyDown(props);
+      //     },
+
+      //     onExit() {
+      //       if (popup && root) {
+      //         root.unmount();
+      //         document.body.removeChild(popup);
+      //         popup = null;
+      //       }
+      //       component.destroy();
+      //     },
+      //   };
+      // },
+      // },
+    }),
     // FloatingMenu
 
     // Nodes
@@ -90,18 +202,25 @@ display: none;
 `;
 
   return (
-    <EditorProvider
-      slotBefore={<CustomMenuBar />}
-      extensions={extensions}
-      content={content}
-      editorProps={{
-        attributes: {
-          class:
-            "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl p-5 focus:outline-none",
-        },
-      }}
-    >
-      <CustomBubbleMenu />
-    </EditorProvider>
+    // sm:flex sm:flex-row-reverse
+    <div className="[&>*:second-child]:w-auto grid relative">
+      <EditorProvider
+        slotBefore={<CustomMenuBar />}
+        // slotAfter={<CustomEditorMenu />}
+        extensions={extensions}
+        content={content}
+        onCreate={({ editor }) => setContentJSON(editor.getJSON())}
+        onUpdate={({ editor }) => setContentJSON(editor.getJSON())}
+        editorProps={{
+          attributes: {
+            class:
+              "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl p-5 focus:outline-none",
+          },
+        }}
+      >
+        <CustomBubbleMenu />
+        <CustomEditorMenu />
+      </EditorProvider>
+    </div>
   );
 }

@@ -1,20 +1,31 @@
+"use client";
+
 import { useCurrentEditor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import {
   CodeIcon,
-  EraserIcon,
   FontBoldIcon,
   FontItalicIcon,
-  ListBulletIcon,
   PilcrowIcon,
   StrikethroughIcon,
 } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
 import {
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon,
 } from "@heroicons/react/24/outline";
+
+import { LuHeading1 } from "react-icons/lu";
+import { LuHeading2 } from "react-icons/lu";
+import { LuHeading3 } from "react-icons/lu";
+import { LuHeading4 } from "react-icons/lu";
+import { LuHeading5 } from "react-icons/lu";
+import { LuHeading6 } from "react-icons/lu";
+
+import { FaListUl } from "react-icons/fa";
+import { FaListOl } from "react-icons/fa";
+
+import { FaQuoteRight } from "react-icons/fa6";
 
 export function CustomMenuBar() {
   const { editor } = useCurrentEditor();
@@ -24,19 +35,21 @@ export function CustomMenuBar() {
   }
 
   return (
-    <div className="flex flex-col gap-y-1 py-2 sticky top-0 bg-card z-10 px-5">
-      <div className="flex gap-x-1">
+    <div className="sticky top-3 bg-popover rounded-md z-10 self-start">
+      <div className="gap-x-1 gap-y-1 px-3 py-3 select-none grid grid-cols-[repeat(auto-fill,2rem)]">
+        {/* Pillcrow */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => editor.chain().focus().setParagraph().run()}
           className={cn(
             editor.isActive("paragraph") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <PilcrowIcon />
+          <PilcrowIcon className="h-4 w-4" />
         </Button>
+
         <Button
           variant="ghost"
           size="icon"
@@ -46,11 +59,12 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("heading", { level: 1 }) &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          h1
+          <LuHeading1 className="h-4 w-4" />
         </Button>
+
         <Button
           variant="ghost"
           size="icon"
@@ -60,10 +74,10 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("heading", { level: 2 }) &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          h2
+          <LuHeading2 className="h-4 w-4" />
         </Button>
 
         <Button
@@ -75,10 +89,10 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("heading", { level: 3 }) &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          h3
+          <LuHeading3 className="h-4 w-4" />
         </Button>
 
         <Button
@@ -90,10 +104,10 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("heading", { level: 4 }) &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          h4
+          <LuHeading4 className="h-4 w-4" />
         </Button>
 
         <Button
@@ -105,12 +119,13 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("heading", { level: 5 }) &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          h5
+          <LuHeading5 className="h-4 w-4" />
         </Button>
 
+        {/* Heading 6 */}
         <Button
           variant="ghost"
           size="icon"
@@ -120,23 +135,26 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("heading", { level: 6 }) &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          h6
+          <LuHeading6 className="h-4 w-4" />
         </Button>
 
+        {/* Bullet List */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={cn(
             editor.isActive("bulletList") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <ListBulletIcon />
+          <FaListUl className="h-4 w-4" />
         </Button>
+
+        {/* Ordered List */}
         <Button
           variant="ghost"
           size="icon"
@@ -144,37 +162,41 @@ export function CustomMenuBar() {
           className={cn(
             editor.isActive("orderedList") &&
               "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          1.
+          <FaListOl className="h-4 w-4" />
         </Button>
 
+        {/* Code */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={cn(
             editor.isActive("codeBlock") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <CodeIcon />
+          <CodeIcon className="h-4 w-4" />
         </Button>
+
+        {/* Blockquote */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={cn(
             editor.isActive("blockquote") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          {`❞`}
+          <FaQuoteRight className="h-4 w-4" />
         </Button>
-      </div>
 
-      <div className="flex gap-x-1">
+        {/* Row/Col 2 */}
+
+        {/* Bold */}
         <Button
           variant="ghost"
           size="icon"
@@ -182,12 +204,13 @@ export function CustomMenuBar() {
           disabled={!editor.can().chain().focus().toggleBold().run()}
           className={cn(
             editor.isActive("bold") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <FontBoldIcon />
+          <FontBoldIcon className="h-4 w-4" />
         </Button>
 
+        {/* Italic */}
         <Button
           variant="ghost"
           size="icon"
@@ -195,12 +218,13 @@ export function CustomMenuBar() {
           disabled={!editor.can().chain().focus().toggleItalic().run()}
           className={cn(
             editor.isActive("italic") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <FontItalicIcon />
+          <FontItalicIcon className="h-4 w-4" />
         </Button>
 
+        {/* Strikethrough */}
         <Button
           variant="ghost"
           size="icon"
@@ -208,12 +232,13 @@ export function CustomMenuBar() {
           disabled={!editor.can().chain().focus().toggleStrike().run()}
           className={cn(
             editor.isActive("strike") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <StrikethroughIcon />
+          <StrikethroughIcon className="h-4 w-4" />
         </Button>
 
+        {/* Undo */}
         <Button
           variant="ghost"
           size="icon"
@@ -221,12 +246,13 @@ export function CustomMenuBar() {
           disabled={!editor.can().chain().focus().undo().run()}
           className={cn(
             editor.isActive("strike") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <ArrowUturnLeftIcon className="w-[15px] h-[15px]" />
+          <ArrowUturnLeftIcon className="w-4 h-4" />
         </Button>
 
+        {/* Redo */}
         <Button
           variant="ghost"
           size="icon"
@@ -234,10 +260,10 @@ export function CustomMenuBar() {
           disabled={!editor.can().chain().focus().redo().run()}
           className={cn(
             editor.isActive("strike") && "bg-accent text-accent-foreground",
-            "h-7 w-7"
+            "h-8 w-8"
           )}
         >
-          <ArrowUturnRightIcon className="w-[15px] h-[15px]" />
+          <ArrowUturnRightIcon className="w-4 h-4" />
         </Button>
       </div>
     </div>

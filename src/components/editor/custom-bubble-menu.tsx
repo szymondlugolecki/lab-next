@@ -24,7 +24,7 @@ export function CustomBubbleMenu() {
     <BubbleMenu
       editor={editor}
       tippyOptions={{ duration: 100 }}
-      className="flex gap-x-1"
+      className="flex gap-x-1 p-1 rounded-md bg-popover"
     >
       <Button
         variant="ghost"
@@ -32,10 +32,10 @@ export function CustomBubbleMenu() {
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={cn(
           editor.isActive("bold") && "bg-accent text-accent-foreground",
-          "h-7 w-7"
+          "h-9 w-9"
         )}
       >
-        <FontBoldIcon />
+        <FontBoldIcon className="w-5 h-5" />
       </Button>
 
       <Button
@@ -44,10 +44,10 @@ export function CustomBubbleMenu() {
         onClick={() => editor.chain().focus().toggleItalic().run()}
         className={cn(
           editor.isActive("italic") && "bg-accent text-accent-foreground",
-          "h-7 w-7"
+          "h-9 w-9"
         )}
       >
-        <FontItalicIcon />
+        <FontItalicIcon className="w-5 h-5" />
       </Button>
 
       <Button
@@ -56,10 +56,10 @@ export function CustomBubbleMenu() {
         onClick={() => editor.chain().focus().toggleStrike().run()}
         className={cn(
           editor.isActive("strike") && "bg-accent text-accent-foreground",
-          "h-7 w-7"
+          "h-9 w-9"
         )}
       >
-        <StrikethroughIcon />
+        <StrikethroughIcon className="w-5 h-5" />
       </Button>
     </BubbleMenu>
   );

@@ -12,7 +12,7 @@
     ".wrangler": true,
     "node_modules": true,
     ".eslintrc.json": true,
-    ".gitignore": true,
+    ".gitignore": false,
     "next-env.d.ts": true,
     "package-lock.json": true,
     "drizzle/meta": true
