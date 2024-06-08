@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,44 +13,88 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  LockOpenIcon,
+  PlusIcon,
+  UserGroupIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import { MoonIcon } from "@radix-ui/react-icons";
+import { useTheme } from "next-themes";
+import Link from "next/link";
 
-export function UserMenu({ children }: { children: React.ReactNode }) {
+export function UserMenu({
+  children,
+  name,
+}: {
+  children: React.ReactNode;
+  name: string;
+}) {
+  const { setTheme, theme } = useTheme();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">{children}</Button>
+        <Button variant="outline" className="select-none">
+          {children}
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+          <DropdownMenuItem className="flex items-center gap-x-1.5">
+            <UserIcon className="w-4 h-4" />
+            Profile
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuLabel>Admin</DropdownMenuLabel>
+
+          {/* rounded-sm px-2 py-1.5 text-sm */}
+
+          <DropdownMenuItem className="p-0">
+            <Link
+              href="/article/create"
+              className="flex items-center gap-x-1.5 w-full px-2 py-1.5"
+            >
+              <PlusIcon className="w-4 h-4" /> Create New Article
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex items-center gap-x-1.5">
+            <UserGroupIcon className="w-4 h-4" />
+            User List
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger className="flex items-center gap-x-1.5">
+              <MoonIcon className="w-4 h-4" />
+              Dark Mode
+            </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("light")}>
+                  Light
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
+                  System
+                </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
+
+          <DropdownMenuItem className="flex items-center gap-x-1.5">
+            <LockOpenIcon className="w-4 h-4" />
+            Log out
+          </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>GitHub</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
-        <DropdownMenuItem disabled>API</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
