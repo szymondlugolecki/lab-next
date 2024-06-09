@@ -4,6 +4,7 @@ import * as sessions from "./tables/session";
 import * as users from "./tables/user";
 import * as oauthAccounts from "./tables/account";
 import * as authenticators from "./tables/authenticator";
+import * as articles from "./tables/article";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export const schemas = {
@@ -11,6 +12,7 @@ export const schemas = {
   ...users,
   ...oauthAccounts,
   ...authenticators,
+  ...articles,
 };
 
 function getDB() {

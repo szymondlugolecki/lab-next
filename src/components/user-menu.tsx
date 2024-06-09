@@ -22,6 +22,27 @@ import {
 import { MoonIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+
+{
+  /* <Link
+              href="/article/create"
+              className="flex items-center gap-x-1.5 w-full px-2 py-1.5"
+            >
+              <PlusIcon className="w-4 h-4" /> Create New Article
+            </Link> */
+}
 
 export function UserMenu({
   children,
@@ -31,6 +52,8 @@ export function UserMenu({
   name: string;
 }) {
   const { setTheme, theme } = useTheme();
+
+  const [createArticleDialogOpen, setCreateArticleDialogOpen] = useState(false);
 
   return (
     <DropdownMenu>
@@ -51,9 +74,6 @@ export function UserMenu({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel>Admin</DropdownMenuLabel>
-
-          {/* rounded-sm px-2 py-1.5 text-sm */}
-
           <DropdownMenuItem className="p-0">
             <Link
               href="/article/create"
@@ -62,6 +82,7 @@ export function UserMenu({
               <PlusIcon className="w-4 h-4" /> Create New Article
             </Link>
           </DropdownMenuItem>
+
           <DropdownMenuItem className="flex items-center gap-x-1.5">
             <UserGroupIcon className="w-4 h-4" />
             User List

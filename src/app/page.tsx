@@ -51,10 +51,10 @@ export default async function Page({
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="max-w-3xl mx-auto space-y-6 text-center">
             <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
-              Explore the Latest Medical Breakthroughs
+              Explore my collection of research notes.
             </h1>
             <p className="text-lg md:text-xl lg:text-2xl">
-              Explore my collection of research notes and .
+              Search by condition, outcome, category, or intervention.
             </p>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute h-6 w-6 transform -translate-y-1/2 left-4 top-1/2 text-muted-foreground" />

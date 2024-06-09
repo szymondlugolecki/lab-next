@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { UserMenu } from "./user-menu";
 import type { Session } from "next-auth";
 import { auth } from "@/lib/auth";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/button";
 
 export async function Header() {
   const session = await auth();

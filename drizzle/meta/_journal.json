@@ -15,6 +15,27 @@
       "when": 1717705998765,
       "tag": "0001_bored_norman_osborn",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1717954887622,
+      "tag": "0002_needy_moondragon",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1717955013862,
+      "tag": "0003_worthless_tarantula",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1717958341517,
+      "tag": "0004_high_jetstream",
+      "breakpoints": true
     }
   ]
 }

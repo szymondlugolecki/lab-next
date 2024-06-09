@@ -8,6 +8,8 @@ import { accountsTable } from "@/db/tables/account";
 import { authenticatorsTable } from "@/db/tables/authenticator";
 import { sessionsTable } from "@/db/tables/session";
 import { usersTable } from "@/db/tables/user";
+import { eq } from "drizzle-orm";
+import { Role } from "../constants";
 
 declare module "next-auth" {
   interface Session {
@@ -16,6 +18,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       image: string;
+      role: Role;
     } & DefaultSession["user"];
   }
 }
@@ -33,8 +36,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "database",
   },
   callbacks: {
-    session({ session }) {
-      return session;
+    async session({ session }) {
+      console.log("session callback");
+      const result = await db.query.usersTable.findFirst({
+        where: eq(usersTable.id, session.user.id),
+        columns: {
+          role: true,
+        },
+      });
+      console.log("result", result);
+      if (!result) {
+        return {
+          ...session,
+          user: { ...session.user, role: "awaiting-approval" },
+        };
+      }
+
+      return { ...session, user: { ...session.user, role: result.role } };
     },
   },
 });

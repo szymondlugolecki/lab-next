@@ -1,0 +1,1 @@
+CREATE INDEX `search_contentx` ON `article` (`search_content`);
