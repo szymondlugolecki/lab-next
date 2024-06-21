@@ -9,7 +9,7 @@
     ".git": true,
     ".next": true,
     ".vscode": true,
-    ".wrangler": true,
+    ".wrangler": false,
     "node_modules": true,
     ".eslintrc.json": true,
     ".gitignore": false,

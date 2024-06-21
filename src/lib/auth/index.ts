@@ -24,7 +24,7 @@ declare module "next-auth" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  debug: process.env.NODE_ENV === "development",
+  // debug: process.env.NODE_ENV === "development",
   adapter: DrizzleAdapter(db, {
     accountsTable,
     usersTable,
@@ -37,14 +37,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async session({ session }) {
-      console.log("session callback");
       const result = await db.query.usersTable.findFirst({
         where: eq(usersTable.id, session.user.id),
         columns: {
           role: true,
         },
       });
-      console.log("result", result);
       if (!result) {
         return {
           ...session,

@@ -1,7 +1,8 @@
 "use client";
 
-import { Root, createRoot } from "react-dom/client";
-import { Editor, EditorProvider } from "@tiptap/react";
+import { useState } from "react";
+import { useFormStatus } from "react-dom";
+import { EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { CustomMenuBar } from "./custom-menu-bar";
 
@@ -29,21 +30,15 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Youtube from "@tiptap/extension-youtube";
 import Image from "@tiptap/extension-image";
-import { CustomBubbleMenu } from "./custom-bubble-menu";
 import Mention from "@tiptap/extension-mention";
 
 import { mentionSuggestionOptions } from "./mentionSuggestionOptions";
-import { Input } from "@/components/ui/input";
-import { useFormStatus } from "react-dom";
-import type { JSONContent } from "@tiptap/react";
+import { CustomBubbleMenu } from "./custom-bubble-menu";
 import { CustomEditorMenu } from "./custom-editor-menu";
+import type { JSONContent } from "@tiptap/react";
 
-interface TipTapProps {
-  contentJSON: JSONContent;
-  setContentJSON: (content: JSONContent) => void;
-}
-
-export default function Tiptap({ contentJSON, setContentJSON }: TipTapProps) {
+export default function Tiptap() {
+  const [contentJSON, setContentJSON] = useState<JSONContent>({});
   const { pending } = useFormStatus();
   console.log("pending", pending);
 
@@ -206,7 +201,6 @@ display: none;
     <div className="[&>*:second-child]:w-auto grid relative">
       <EditorProvider
         slotBefore={<CustomMenuBar />}
-        // slotAfter={<CustomEditorMenu />}
         extensions={extensions}
         content={content}
         onCreate={({ editor }) => setContentJSON(editor.getJSON())}
@@ -219,7 +213,7 @@ display: none;
         }}
       >
         <CustomBubbleMenu />
-        <CustomEditorMenu />
+        <CustomEditorMenu contentJSON={contentJSON} pending={pending} />
       </EditorProvider>
     </div>
   );

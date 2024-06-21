@@ -18,6 +18,9 @@ import {
 
 import createArticle from "@/lib/actions/article/create";
 import { Input } from "@/components/ui/input";
+import { useParams } from "next/navigation";
+import { Language } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 const articleCreateSchema = z.object({
   title: z
@@ -29,7 +32,9 @@ const articleCreateSchema = z.object({
 });
 
 export function CreateArticleForm() {
+  const { lang } = useParams<{ lang: Language }>();
   const { toast } = useToast();
+  const t = useTranslations("CreateArticle");
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof articleCreateSchema>>({
@@ -40,65 +45,54 @@ export function CreateArticleForm() {
     },
   });
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    const response = await createArticle(data);
-    if (response?.error) {
-      const { error } = response;
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: typeof error === "string" ? error : error.title,
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Article created!",
-      });
-      form.reset();
-    }
-  });
-
-  // 2. Define a submit handler.
-  //   function onSubmit(values: z.infer<typeof formSchema>) {
-  //     const response = await createJoke(data);
-  //     if (response?.error) {
-  //       toast.error(response.error);
-  //     } else {
-  //       toast.success("Joke added!");
-  //       form.reset();
-  //     }
-  //   }
-
-  <input
-    placeholder="Title"
-    name="title"
-    className="flex h-14 w-full rounded-none text-2xl font-semibold border-0 focus:border-b border-input bg-transparent ring-0 outline-none py-1 shadow-sm transition-all placeholder:text-muted-foreground"
-  />;
+  const onSubmit = async ({ title }: z.infer<typeof articleCreateSchema>) => {
+    await createArticle(lang, { title });
+    // console.log("response", response);
+    // if (response?.error) {
+    //   const { error } = response;
+    //   console.log("error", error);
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Error",
+    //     description: typeof error === "string" ? error : error.title,
+    //   });
+    // } else {
+    //   toast({
+    //     title: "Success",
+    //     description: "Article created!",
+    //   });
+    //   form.reset();
+    // }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        method="POST"
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="select-none">Title</FormLabel>
+              <FormLabel className="select-none">{t("title")}</FormLabel>
               <FormControl>
                 <input
-                  placeholder="Variety of compounds in Orange Juice"
+                  placeholder={t("title_placeholder")}
                   className="flex h-14 w-full rounded-none text-2xl font-semibold border-0 focus:border-b border-input bg-transparent ring-0 outline-none py-1 shadow-sm transition-all placeholder:text-muted-foreground"
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                A title should be clear and concise.
-              </FormDescription>
+              <FormDescription>{t("title_hints")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Create Article</Button>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {t("create_article")}
+        </Button>
       </form>
     </Form>
   );

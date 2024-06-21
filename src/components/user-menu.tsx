@@ -18,31 +18,16 @@ import {
   PlusIcon,
   UserGroupIcon,
   UserIcon,
+  LanguageIcon,
 } from "@heroicons/react/24/outline";
 import { MoonIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
-import Link from "next/link";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useState } from "react";
-
-{
-  /* <Link
-              href="/article/create"
-              className="flex items-center gap-x-1.5 w-full px-2 py-1.5"
-            >
-              <PlusIcon className="w-4 h-4" /> Create New Article
-            </Link> */
-}
+import { Link } from "@/lib/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { useParams } from "next/navigation";
+import ReactCountryFlag from "react-country-flag";
 
 export function UserMenu({
   children,
@@ -52,6 +37,10 @@ export function UserMenu({
   name: string;
 }) {
   const { setTheme, theme } = useTheme();
+  const t = useTranslations("UserMenu");
+  const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams();
 
   const [createArticleDialogOpen, setCreateArticleDialogOpen] = useState(false);
 
@@ -68,7 +57,7 @@ export function UserMenu({
         <DropdownMenuGroup>
           <DropdownMenuItem className="flex items-center gap-x-1.5">
             <UserIcon className="w-4 h-4" />
-            Profile
+            {t("profile")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -79,33 +68,64 @@ export function UserMenu({
               href="/article/create"
               className="flex items-center gap-x-1.5 w-full px-2 py-1.5"
             >
-              <PlusIcon className="w-4 h-4" /> Create New Article
+              <PlusIcon className="w-4 h-4" /> {t("create_new_article")}
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem className="flex items-center gap-x-1.5">
             <UserGroupIcon className="w-4 h-4" />
-            User List
+            {t("user_list")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="flex items-center gap-x-1.5">
+              <LanguageIcon className="w-4 h-4" />
+              {t("language")}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem
+                  onClick={() => {
+                    // @ts-ignore
+                    router.replace({ pathname, params }, { locale: "pl" });
+                  }}
+                >
+                  <ReactCountryFlag countryCode="PL" svg className="mr-1.5" />{" "}
+                  Polski
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    // @ts-ignore
+                    router.replace({ pathname, params }, { locale: "en" });
+                  }}
+                >
+                  <ReactCountryFlag countryCode="GB" svg className="mr-1.5" />{" "}
+                  English
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="flex items-center gap-x-1.5">
               <MoonIcon className="w-4 h-4" />
-              Dark Mode
+              {t("dark_mode")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 <DropdownMenuItem onClick={() => setTheme("dark")}>
-                  Dark
+                  {t("dark")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("light")}>
-                  Light
+                  {t("light")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setTheme("system")}>
-                  System
+                  {t("system")}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -113,7 +133,7 @@ export function UserMenu({
 
           <DropdownMenuItem className="flex items-center gap-x-1.5">
             <LockOpenIcon className="w-4 h-4" />
-            Log out
+            {t("log_out")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

@@ -1,38 +1,44 @@
 import { Language } from "@/lib/constants";
 import { db } from "@/lib/db";
-import { articlesTable } from "@/lib/db/tables/article";
+import { articleVariantsTable, articlesTable } from "@/lib/db/tables/article";
 import { octokit } from "@/lib/server/clients";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { eq } from "drizzle-orm";
-import React, { useEffect, useMemo, useState } from "react";
+import { and, eq } from "drizzle-orm";
 import { generateHTML } from "@tiptap/html";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import sanitizeHtml from "sanitize-html";
-import { marked } from "marked";
+import { getArticlePath } from "@/lib/utils";
 
 const getArticleContent = async (title: string, language: Language) => {
-  const result = await db.query.articlesTable.findFirst({
-    where: eq(articlesTable.parsedTitle, title),
+  const result = await db.query.articleVariantsTable.findFirst({
+    where: and(
+      eq(articleVariantsTable.parsedTitle, title),
+      eq(articleVariantsTable.language, language)
+    ),
     columns: {
       id: true,
-      privacy: true,
       title: true,
-      category: true,
       createdAt: true,
     },
     with: {
-      allowedUsers: {
+      article: {
         columns: {
-          userId: true,
+          privacy: true,
+          category: true,
         },
-      },
-      blockedUsers: {
-        columns: {
-          userId: true,
+        with: {
+          allowedUsers: {
+            columns: {
+              userId: true,
+            },
+          },
+          blockedUsers: {
+            columns: {
+              userId: true,
+            },
+          },
         },
       },
     },
@@ -48,7 +54,7 @@ const getArticleContent = async (title: string, language: Language) => {
     {
       owner: process.env.GH_REPO_OWNER!,
       repo: process.env.GH_REPO_NAME!,
-      path: `articles/${language}/${result.id}.json`,
+      path: getArticlePath(result.id, language),
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
       },
@@ -95,11 +101,6 @@ export default async function Article({
           <div className="max-w-3xl mx-auto">
             <div className="prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl p-5 focus:outline-none">
               <h1>{data.title}</h1>
-              {/* <input
-                placeholder="Title"
-                name="title"
-                className="flex h-14 w-full rounded-none text-2xl font-semibold border-0 focus:border-b border-input bg-transparent ring-0 outline-none py-1 shadow-sm transition-all placeholder:text-muted-foreground"
-              /> */}
               <div dangerouslySetInnerHTML={{ __html: data.content }}></div>
             </div>
           </div>

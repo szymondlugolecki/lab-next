@@ -28,7 +28,9 @@
       "@/auth/*": ["./src/lib/auth/*"],
       "@/auth": ["./src/lib/auth"],
       "@/db/*": ["./src/lib/db/*"],
-      "@/db": ["./src/lib/db"]
+      "@/db": ["./src/lib/db"],
+      "@/i18n/*": ["./src/lib/i18n/*"],
+      "@/i18n": ["./src/lib/i18n"]
     },
     "types": ["@cloudflare/workers-types/2023-07-01"]
   },

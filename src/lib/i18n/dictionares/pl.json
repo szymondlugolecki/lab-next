@@ -1,0 +1,40 @@
+{
+  "Index": {
+    "h1": "Ekploruj kolekcję notatek badawczych",
+    "p": "Szukaj artykułów o substancjach, schorzeniach, parametrach zdrowotnych i kategoriach",
+    "input": "Szukaj...",
+    "new_articles": "Nowe artykuły",
+    "browse_all": "Przeglądaj wszystkie",
+    "minute_read": "{minutes} minut czytania",
+    "read_more": "Czytaj dalej",
+    "recently_edited": "Ostatnio zaktualizowane",
+    "updated": "Zaktualizowano {updateDate, date, medium}"
+  },
+  "Header": {
+    "home": "Strona główna",
+    "search": "Szukaj",
+    "signin": "Zaloguj"
+  },
+  "Footer": {
+    "privacy": "Polityka Prywatności",
+    "terms": "Zasady Użytkowania",
+    "rights": "Wszelkie prawa zastrzeżone"
+  },
+  "UserMenu": {
+    "profile": "Profil",
+    "create_new_article": "Utwórz nowy artykuł",
+    "user_list": "Lista użytkowników",
+    "language": "Język",
+    "dark_mode": "Tryb Nocny",
+    "dark": "Ciemny",
+    "light": "Jasny",
+    "system": "Systemowy",
+    "log_out": "Wyloguj"
+  },
+  "CreateArticle": {
+    "title": "Tytuł",
+    "title_placeholder": "Różnorodność związków w soku pomarańczowym",
+    "title_hints": "Tytuł powinien być krótki i zwięzły",
+    "create_article": "Utwórz Artykuł"
+  }
+}

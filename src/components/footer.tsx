@@ -1,6 +1,9 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/lib/i18n/navigation";
 
-export function Footer() {
+export async function Footer() {
+  const t = await getTranslations("Footer");
+
   return (
     <footer className="px-6 py-8 md:px-8 lg:px-12">
       <div className="container flex flex-col items-center justify-between mx-auto md:flex-row">
@@ -9,7 +12,7 @@ export function Footer() {
             Lab
           </Link>
           <p className="mt-2 text-sm text-gray-400">
-            &copy; 2024 Lab. All rights reserved.
+            &copy; 2024 Lab. {t("rights")}.
           </p>
         </div>
         <div className="flex mt-4 space-x-4 md:mt-0">
@@ -18,14 +21,14 @@ export function Footer() {
             className="text-sm duration-100 hover:text-primary"
             prefetch={false}
           >
-            Privacy Policy
+            {t("privacy")}
           </Link>
           <Link
             href="/tos"
             className="text-sm duration-100 hover:text-primary"
             prefetch={false}
           >
-            Terms of Service
+            {t("terms")}
           </Link>
         </div>
       </div>

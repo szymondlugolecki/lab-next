@@ -13,22 +13,42 @@ import {
   sql,
   relations,
 } from "drizzle-orm";
-import { generateIdFromEntropySize } from "lucia";
 import {
   CATEGORIES_MAP,
+  LANGUAGES_MAP,
   PRIVACY,
   type Category,
   type Tag,
+  type Language,
 } from "../../constants";
 import { usersTable } from "./user";
+import { commentsTable } from "./comment";
 
 const categories = CATEGORIES_MAP.map(({ value }) => value) as [
   Category,
   ...Category[]
 ];
 
-export const articlesTable = sqliteTable(
-  "article",
+const languages = LANGUAGES_MAP.map(({ value }) => value) as [
+  Language,
+  ...Language[]
+];
+
+export const articlesTable = sqliteTable("article", {
+  id: text("id").primaryKey(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+
+  category: text("category", { enum: categories }).notNull().default("other"),
+  tags: text("tags", { mode: "json" }).$type<Tag[]>().notNull().default([]),
+
+  // "private" | "public" | "restricted"
+  privacy: text("privacy", { enum: PRIVACY }).notNull().default("private"),
+});
+
+export const articleVariantsTable = sqliteTable(
+  "article_variant",
   {
     id: text("id").primaryKey(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
@@ -37,36 +57,23 @@ export const articlesTable = sqliteTable(
 
     title: text("title").notNull(),
     parsedTitle: text("parsed_title").notNull(),
-    category: text("category", { enum: categories }).notNull().default("other"),
-    tags: text("tags", { mode: "json" }).$type<Tag[]>().notNull().default([]),
 
+    language: text("language", { enum: languages }).notNull(),
+
+    // parsed content optimized for search
+    searchContent: text("search_content").notNull().default(""),
+
+    articleId: text("article_id")
+      .notNull()
+      .references(() => articlesTable.id),
     authorId: text("author_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
-
-    // "private" | "public" | "restricted"
-    privacy: text("privacy", { enum: PRIVACY }).notNull().default("private"),
-
-    // users with allowed access (overrides privacy settings)
-
-    //   allowedAccessId: text("allowed_access_id").references(() => usersTable.id, {
-    //     onDelete: "cascade",
-    //   }),
-
-    // users with blocked access (overrides privacy settings)
-    //   blockedAccessId: text("blocked_access_id").references(() => usersTable.id, {
-    //     onDelete: "cascade",
-    //   }),
-
-    // parsed content optimized for search
-    searchContentPL: text("search_content_pl").notNull().default(""),
-    searchContentEN: text("search_content_en").notNull().default(""),
   },
   (table) => {
     return {
       parsedTitlex: uniqueIndex("parsed_titlex").on(table.parsedTitle),
-      searchContentPLx: index("search_content_plx").on(table.searchContentPL),
-      searchContentENx: index("search_content_enx").on(table.searchContentEN),
+      searchContent: index("search_contentx").on(table.searchContent),
     };
   }
 );
@@ -104,12 +111,8 @@ export const blockedAccessTable = sqliteTable(
 );
 
 // Relations for articlesTable
-export const articlesRelations = relations(articlesTable, ({ one, many }) => ({
-  author: one(usersTable, {
-    fields: [articlesTable.authorId],
-    references: [usersTable.id],
-    relationName: "author",
-  }),
+export const articlesRelations = relations(articlesTable, ({ many }) => ({
+  variants: many(articleVariantsTable, { relationName: "variants" }),
   allowedUsers: many(allowedAccessTable, {
     relationName: "allowed_access_article",
   }),
@@ -117,6 +120,24 @@ export const articlesRelations = relations(articlesTable, ({ one, many }) => ({
     relationName: "blocked_access_article",
   }),
 }));
+
+// Relations for articleVariantsTable
+export const articleVariantsRelations = relations(
+  articleVariantsTable,
+  ({ one, many }) => ({
+    author: one(usersTable, {
+      fields: [articleVariantsTable.authorId],
+      references: [usersTable.id],
+      relationName: "author",
+    }),
+    comments: many(commentsTable, { relationName: "comments" }),
+    article: one(articlesTable, {
+      fields: [articleVariantsTable.articleId],
+      references: [articlesTable.id],
+      relationName: "article",
+    }),
+  })
+);
 
 // Relations for allowedAccessTable
 export const allowedAccessRelations = relations(
@@ -155,5 +176,17 @@ export const blockedAccessRelations = relations(
 export const insertArticleSchema = createInsertSchema(articlesTable);
 export const selectArticleSchema = createSelectSchema(articlesTable);
 
+export const insertArticleVariantSchema =
+  createInsertSchema(articleVariantsTable);
+export const selectArticleVariantSchema =
+  createSelectSchema(articleVariantsTable);
+
 export type SelectArticle = InferSelectModel<typeof articlesTable>;
 export type InsertArticle = InferInsertModel<typeof articlesTable>;
+
+export type SelectArticleVariant = InferSelectModel<
+  typeof articleVariantsTable
+>;
+export type InsertArticleVariant = InferInsertModel<
+  typeof articleVariantsTable
+>;

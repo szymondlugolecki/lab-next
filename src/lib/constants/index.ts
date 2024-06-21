@@ -96,3 +96,7 @@ export const LANGUAGES_MAP = [
   { key: "Polski", value: "pl" },
   { key: "English", value: "en" },
 ] as const;
+export const LANGUAGES = LANGUAGES_MAP.map(({ value }) => value);
+
+export type Locale = (typeof LOCALES)[number];
+export const LOCALES = ["en", "pl"] as const;

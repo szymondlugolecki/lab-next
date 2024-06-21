@@ -1,55 +1,110 @@
 "use server";
 
+import { auth } from "@/lib/auth";
+import { LANGUAGES_MAP, LOCALES, Language, Locale } from "@/lib/constants";
+import { db } from "@/lib/db";
+import { articleVariantsTable, articlesTable } from "@/lib/db/tables/article";
 import { octokit } from "@/lib/server/clients";
+import {
+  attempt,
+  extractTextFromJSON,
+  getArticlePath,
+  getLanguageFromLocale,
+} from "@/lib/utils";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { generateRandomString, alphabet } from "oslo/crypto";
 import { z } from "zod";
-import type { JSONContent } from "@tiptap/react";
 
 // https://github.com/szymondlugolecki/lab-articles.git
 
+const articleUpdateContentSchema = z.object({
+  id: z.string({
+    invalid_type_error: "Invalid article id",
+    required_error: "Article id is required",
+  }),
+  content: z.string({
+    invalid_type_error: "Invalid content",
+    required_error: "Content is required",
+  }),
+  locale: z.enum(LOCALES, {
+    invalid_type_error: "Invalid locale",
+    required_error: "Locale is required",
+  }),
+});
+
 // const date = new Date().toLocaleDateString('pl-PL')
 
-// interface ArticleUpdateSchema {
-//   content: JSONContent;
-// }
+export default async function updateContent(
+  data: z.infer<typeof articleUpdateContentSchema>
+) {
+  const session = await auth();
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
 
-export default async function updateContent(content: JSONContent) {
-  console.log("update.ts", typeof content, content);
-  try {
-    JSON.parse(JSON.stringify(content));
-  } catch (error) {
+  const result = articleUpdateContentSchema.safeParse(data);
+
+  if (!result.success) {
     return {
-      error: "Invalid content",
+      error: result.error.flatten().fieldErrors,
     };
   }
 
-  // const { content } = data;
+  const { id, content, locale } = data;
+  const language = getLanguageFromLocale(locale);
 
-  //
+  // Update the article on Github
+  const [, failedGithubUpdate] = await attempt(
+    octokit.createOrUpdateTextFile({
+      owner: process.env.GH_REPO_OWNER,
+      repo: process.env.GH_REPO_NAME,
+      path: getArticlePath(id, language),
+      content,
+      message: `Updated article`,
+    })
+    // octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+    //   owner: "szymondlugolecki",
+    //   repo: "lab-articles",
+    //   path: `articles/pl/${id}.json`,
+    //   message: `Updated ${title}`,
+    //   content: Buffer.from("[]").toString("base64"),
+    //   headers: {
+    //     "X-GitHub-Api-Version": "2022-11-28",
+    //   },
+    // })
+  );
+  if (failedGithubUpdate) {
+    console.error("Error while updating article on Github", failedGithubUpdate);
+    return {
+      error: "Error while updating the article on Github",
+    };
+  }
 
-  //   const id = generateRandomString(10, alphabet("a-z", "0-9"));
-  //   const parsedTitle = title.toString().replace(/\s+/g, "-").toLowerCase();
+  const searchContentParsed = extractTextFromJSON(JSON.parse(content));
 
-  //   // Upload to Github
-  //   try {
-  //     await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-  //       owner: "szymondlugolecki",
-  //       repo: "lab-articles",
-  //       path: `articles/${id}.json`,
-  //       message: `Added ${title}`,
-  //       content: Buffer.from("[]").toString("base64"),
-  //       headers: {
-  //         "X-GitHub-Api-Version": "2022-11-28",
-  //       },
-  //     });
-  //   } catch (error) {
-  //     return {
-  //       errror: "Error while uploading to Github",
-  //     };
-  //   }
+  // Updating the content in the database
+  const [newDatabaseArticle, failedDatabaseUpload] = await attempt(
+    db
+      .update(articleVariantsTable)
+      .set({ searchContent: searchContentParsed })
+      .where(
+        and(
+          eq(articleVariantsTable.id, id),
+          eq(articleVariantsTable.language, language)
+        )
+      )
+      .returning({ parsedTitle: articleVariantsTable.parsedTitle })
+  );
+  if (failedDatabaseUpload) {
+    console.error(
+      "Error while updating article content in the database",
+      failedDatabaseUpload
+    );
+    return {
+      error: "Error while updating content in the database",
+    };
+  }
 
-  redirect(`/`);
-  // revalidatePath('/')
+  redirect(`/article/${newDatabaseArticle[0].parsedTitle}`);
 }

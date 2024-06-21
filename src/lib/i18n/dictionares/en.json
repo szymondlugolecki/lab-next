@@ -1,0 +1,40 @@
+{
+  "Index": {
+    "h1": "Explore my collection of research notes",
+    "p": "Search by substance, condition, outcome or category.",
+    "input": "Search...",
+    "new_articles": "New articles",
+    "browse_all": "Browse all",
+    "minute_read": "{minutes} min read",
+    "read_more": "Read more",
+    "recently_edited": "Recently edited",
+    "updated": "Updated {updateDate, date, medium}"
+  },
+  "Header": {
+    "home": "Home",
+    "search": "Search",
+    "signin": "Sign in"
+  },
+  "Footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "rights": "All rights reserved"
+  },
+  "UserMenu": {
+    "profile": "Profile",
+    "create_new_article": "Create New Article",
+    "user_list": "User List",
+    "language": "Language",
+    "dark_mode": "Dark Mode",
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System",
+    "log_out": "Log out"
+  },
+  "CreateArticle": {
+    "title": "Title",
+    "title_placeholder": "Variety of compounds in Orange Juice",
+    "title_hints": "The title should be short and concise",
+    "create_article": "Create Article"
+  }
+}

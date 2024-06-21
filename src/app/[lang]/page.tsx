@@ -15,8 +15,9 @@ import {
 import { Suspense } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useFormatter } from "next-intl";
 
 export const runtime = "edge";
 
@@ -34,7 +35,7 @@ const filters = {
 
 type FilterKeys = keyof typeof filters;
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
   searchParams?: {
@@ -42,8 +43,12 @@ export default async function Page({
     page?: string;
   };
 }) {
+  const t = useTranslations("Index");
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
+  const format = useFormatter();
+
+  console.log("t", t("h1"));
 
   return (
     <main className="flex-1">
@@ -51,16 +56,14 @@ export default async function Page({
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="max-w-3xl mx-auto space-y-6 text-center">
             <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl">
-              Explore my collection of research notes.
+              {t("h1")}
             </h1>
-            <p className="text-lg md:text-xl lg:text-2xl">
-              Search by condition, outcome, category, or intervention.
-            </p>
+            <p className="text-lg md:text-xl lg:text-2xl">{t("p")}</p>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute h-6 w-6 transform -translate-y-1/2 left-4 top-1/2 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search articles..."
+                placeholder={t("input")}
                 className="w-full px-12 py-3 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
@@ -102,13 +105,14 @@ export default async function Page({
       <section className="py-12 md:py-20 lg:py-24">
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="flex items-center gap-x-2 pb-3">
-            <p className="font-semibold">New articles</p>
+            <p className="font-semibold">{t("new_articles")}</p>
             <span className="text-muted-foreground text-sm">•</span>
             <Link
               href="/articles"
               className="flex items-center gap-x-1 leading-4 text-sm text-muted-foreground hover:underline"
             >
-              Browse all <ArrowRightIcon className="w-3 h-3 stroke-[3px]" />
+              {t("browse_all")}{" "}
+              <ArrowRightIcon className="w-3 h-3 stroke-[3px]" />
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -124,9 +128,15 @@ export default async function Page({
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <span>May 15, 2023</span>
+                  <span>
+                    {format.dateTime(new Date(), {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
                   <span>·</span>
-                  <span>5 min read</span>
+                  <span>{t("minute_read", { minutes: 5 })}</span>
                 </div>
                 <h3 className="text-xl font-bold">
                   Unlocking the Secrets of the Human Genome
@@ -140,7 +150,7 @@ export default async function Page({
                   className="text-primary hover:underline"
                   prefetch={false}
                 >
-                  Read more
+                  {t("read_more")}
                 </Link>
               </CardContent>
             </Card>
@@ -156,9 +166,15 @@ export default async function Page({
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <span>April 28, 2023</span>
+                  <span>
+                    {format.dateTime(new Date(), {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
                   <span>·</span>
-                  <span>8 min read</span>
+                  <span>{t("minute_read", { minutes: 8 })}</span>
                 </div>
                 <h3 className="text-xl font-bold">
                   Revolutionizing Cancer Treatment with Immunotherapy
@@ -172,7 +188,7 @@ export default async function Page({
                   className="text-primary hover:underline"
                   prefetch={false}
                 >
-                  Read more
+                  {t("read_more")}
                 </Link>
               </CardContent>
             </Card>
@@ -188,9 +204,15 @@ export default async function Page({
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <span>March 12, 2023</span>
+                  <span>
+                    {format.dateTime(new Date(), {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
                   <span>·</span>
-                  <span>6 min read</span>
+                  <span>{t("minute_read", { minutes: 6 })}</span>
                 </div>
                 <h3 className="text-xl font-bold">
                   The Future of Personalized Medicine
@@ -204,7 +226,7 @@ export default async function Page({
                   className="text-primary hover:underline"
                   prefetch={false}
                 >
-                  Read more
+                  {t("read_more")}
                 </Link>
               </CardContent>
             </Card>
@@ -214,7 +236,7 @@ export default async function Page({
       <section className="py-12 md:py-20 lg:py-24">
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className=" pb-3">
-            <p className="font-semibold">Recently edited</p>
+            <p className="font-semibold">{t("recently_edited")}</p>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <Card>
@@ -229,7 +251,7 @@ export default async function Page({
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-400">
-                  <span>Updated May 10, 2023</span>
+                  <span>{t("updated", { updateDate: new Date() })}</span>
                 </div>
                 <h3 className="text-xl font-bold">
                   Exploring the Gut-Brain Connection
@@ -244,7 +266,7 @@ export default async function Page({
                   className="text-primary hover:underline"
                   prefetch={false}
                 >
-                  Read more
+                  {t("read_more")}
                 </Link>
               </CardContent>
             </Card>
@@ -260,7 +282,7 @@ export default async function Page({
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-400">
-                  <span>Updated April 22, 2023</span>
+                  <span>{t("updated", { updateDate: new Date() })}</span>
                 </div>
                 <h3 className="text-xl font-bold">
                   The Rise of Telemedicine: Transforming Healthcare
@@ -275,7 +297,7 @@ export default async function Page({
                   className="text-primary hover:underline"
                   prefetch={false}
                 >
-                  Read more
+                  {t("read_more")}
                 </Link>
               </CardContent>
             </Card>
@@ -291,7 +313,7 @@ export default async function Page({
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-400">
-                  <span>Updated March 28, 2023</span>
+                  <span>{t("updated", { updateDate: new Date() })}</span>
                 </div>
                 <h3 className="text-xl font-bold">
                   The Future of Regenerative Medicine
@@ -306,7 +328,7 @@ export default async function Page({
                   className="text-primary hover:underline"
                   prefetch={false}
                 >
-                  Read more
+                  {t("read_more")}
                 </Link>
               </CardContent>
             </Card>
@@ -331,12 +353,3 @@ export default async function Page({
     // </main>
   );
 }
-
-//  <form
-//     action={async () => {
-//       "use server";
-//       await signIn("google");
-//     }}
-//   >
-//     <Button type="submit">Sign in with Google</Button>
-//   </form>
