@@ -4,38 +4,28 @@ import { auth } from "@/lib/auth";
 import { Language } from "@/lib/constants";
 import { db } from "@/lib/db";
 import { articleVariantsTable, articlesTable } from "@/lib/db/tables/article";
-// import { redirect, permanentRedirect } from "@/lib/i18n/navigation";
+import { redirect, permanentRedirect } from "@/lib/i18n/navigation";
 import { octokit } from "@/lib/server/clients";
 import { attempt, getArticlePath, parseArticleTitle } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
+// import { permanentRedirect, redirect } from "next/navigation";
 import { generateRandomString, alphabet } from "oslo/crypto";
 import { z } from "zod";
+import { ArticleCreateSchema } from "@/lib/schemas/article";
+import { article$ } from "@/lib/schemas";
 
 // https://github.com/szymondlugolecki/lab-articles.git
 
-const articleCreateSchema = z.object({
-  title: z
-    .string({
-      invalid_type_error: "Invalid title",
-      required_error: "Title is required",
-    })
-    .min(3),
-});
-
 // const date = new Date().toLocaleDateString('pl-PL')
 
-export default async function create(
-  language: Language,
-  data: z.infer<typeof articleCreateSchema>
-) {
+export default async function create(data: z.infer<ArticleCreateSchema>) {
   const session = await auth();
   if (!session) {
     throw new Error("Unauthorized");
   }
 
-  const result = articleCreateSchema.safeParse(data);
+  const result = article$.create().safeParse(data);
 
   if (!result.success) {
     return {
@@ -43,7 +33,7 @@ export default async function create(
     };
   }
 
-  const { title } = data;
+  const { title, language } = data;
   const articleId = generateRandomString(10, alphabet("a-z", "0-9"));
   const articleVariantId = generateRandomString(10, alphabet("a-z", "0-9"));
   const parsedTitle = parseArticleTitle(title);
@@ -103,13 +93,14 @@ export default async function create(
   //   };
   // }
 
-  console.log(
-    "redirecting to",
-    `${process.env.NEXT_PUBLIC_BASE_URL}/${language}/article/${parsedTitle}/update`
-  );
+  // console.log(
+  //   "redirecting to",
+  //   `${process.env.NEXT_PUBLIC_BASE_URL}/${language}/article/${parsedTitle}/update`
+  // );
 
   return {
     success: true,
+    parsedTitle,
   };
 
   // Doesn't throw an error, but doesn't redirect either:
@@ -120,6 +111,12 @@ export default async function create(
   // Error + no redirect:
   // I think this redirect is not compatible with edge runtime or actions
   // redirect({
+  //   pathname: "/article/[title]/update",
+  //   params: { title: parsedTitle },
+  // });
+
+  // console.log("redirecting to", `/article/${parsedTitle}/update`);
+  // permanentRedirect({
   //   pathname: "/article/[title]/update",
   //   params: { title: parsedTitle },
   // });

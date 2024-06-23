@@ -21,54 +21,66 @@ import { Input } from "@/components/ui/input";
 import { useParams } from "next/navigation";
 import { Language } from "@/lib/constants";
 import { useTranslations } from "next-intl";
-
-const articleCreateSchema = z.object({
-  title: z
-    .string({
-      invalid_type_error: "Invalid title",
-      required_error: "Title is required",
-    })
-    .min(3),
-});
+import { article$ } from "@/lib/schemas";
+import { ArticleCreateSchema } from "@/lib/schemas/article";
+import { redirect } from "next/dist/server/api-utils";
+import { permanentRedirect, useRouter } from "@/lib/i18n/navigation";
 
 export function CreateArticleForm() {
   const { lang } = useParams<{ lang: Language }>();
   const { toast } = useToast();
   const t = useTranslations("CreateArticle");
+  const router = useRouter();
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof articleCreateSchema>>({
-    resolver: zodResolver(articleCreateSchema),
+  const form = useForm<z.infer<ArticleCreateSchema>>({
+    resolver: zodResolver(article$.create(lang)),
     mode: "onChange",
     defaultValues: {
       title: "",
+      language: lang,
     },
   });
 
-  const onSubmit = async ({ title }: z.infer<typeof articleCreateSchema>) => {
-    await createArticle(lang, { title });
-    // console.log("response", response);
-    // if (response?.error) {
-    //   const { error } = response;
-    //   console.log("error", error);
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Error",
-    //     description: typeof error === "string" ? error : error.title,
-    //   });
-    // } else {
-    //   toast({
-    //     title: "Success",
-    //     description: "Article created!",
-    //   });
-    //   form.reset();
-    // }
+  const onSubmit = async ({
+    title,
+    language,
+  }: z.infer<ArticleCreateSchema>) => {
+    const response = await createArticle({ title, language });
+    if (response?.success) {
+      router.push({
+        pathname: "/article/[title]/update",
+        params: { title: response.parsedTitle },
+      });
+      // permanentRedirect({
+      //   pathname: "/article/[title]/update",
+      //   params: { title: response.title },
+      // });
+      toast({
+        title: "Success",
+        description: "Article created!",
+      });
+      // form.reset();
+    } else {
+      const { error } = response;
+      console.log("error", error);
+      const parsedError = error
+        ? typeof error === "string"
+          ? error
+          : error.title
+        : "Unexpected error";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: parsedError,
+      });
+    }
   };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, console.error)}
         method="POST"
         className="space-y-8"
       >
@@ -90,7 +102,24 @@ export function CreateArticleForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <FormField
+          control={form.control}
+          name="language"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl className="hidden">
+                <Input {...field} value={lang} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          disabled={
+            form.formState.isSubmitting || form.formState.isSubmitSuccessful
+          }
+        >
           {t("create_article")}
         </Button>
       </form>
