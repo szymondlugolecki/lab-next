@@ -37,7 +37,13 @@ import { CustomBubbleMenu } from "./custom-bubble-menu";
 import { CustomEditorMenu } from "./custom-editor-menu";
 import type { JSONContent } from "@tiptap/react";
 
-export default function Tiptap() {
+export default function Tiptap({
+  id,
+  fetchedContent,
+}: {
+  id: string;
+  fetchedContent?: string;
+}) {
   const [contentJSON, setContentJSON] = useState<JSONContent>({});
   const { pending } = useFormStatus();
   console.log("pending", pending);
@@ -165,7 +171,9 @@ export default function Tiptap() {
     Underline,
   ];
 
-  const content = `
+  const content =
+    fetchedContent ||
+    `
 <h2>
   Hi there,
 </h2>
@@ -213,7 +221,7 @@ display: none;
         }}
       >
         <CustomBubbleMenu />
-        <CustomEditorMenu contentJSON={contentJSON} pending={pending} />
+        <CustomEditorMenu id={id} contentJSON={contentJSON} pending={pending} />
       </EditorProvider>
     </div>
   );

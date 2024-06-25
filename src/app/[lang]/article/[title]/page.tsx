@@ -1,6 +1,6 @@
 import { Language } from "@/lib/constants";
 import { db } from "@/lib/db";
-import { articleVariantsTable, articlesTable } from "@/lib/db/tables/article";
+import { articleVariantsTable } from "@/lib/db/tables/article";
 import { octokit } from "@/lib/server/clients";
 import { and, eq } from "drizzle-orm";
 import { generateHTML } from "@tiptap/html";
@@ -88,6 +88,7 @@ export default async function Article({
 }: {
   params: { title: string };
 }) {
+  console.log("params", params);
   const { data, error } = await getArticleContent(params.title, "pl");
 
   if (!data) {

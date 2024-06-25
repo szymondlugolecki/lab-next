@@ -59,15 +59,27 @@ dependencies:
   '@radix-ui/react-toast':
     specifier: ^1.1.5
     version: 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
+  '@tanstack/react-table':
+    specifier: ^8.17.3
+    version: 8.17.3(react-dom@18.3.1)(react@18.3.1)
   '@tiptap-pro/extension-emoji':
     specifier: ^2.8.9
     version: 2.8.9(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)(emojibase@15.3.1)
+  '@tiptap/extension-bold':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
+  '@tiptap/extension-bubble-menu':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap/extension-character-count':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap/extension-color':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/extension-text-style@2.4.0)
+  '@tiptap/extension-document':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
   '@tiptap/extension-highlight':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)
@@ -83,6 +95,9 @@ dependencies:
   '@tiptap/extension-mention':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)
+  '@tiptap/extension-paragraph':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
   '@tiptap/extension-subscript':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)
@@ -105,6 +120,9 @@ dependencies:
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap/extension-task-list':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
+  '@tiptap/extension-text':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/core@2.4.0)
   '@tiptap/extension-text-style':
@@ -2875,6 +2893,23 @@ packages:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.4
     dev: true
+
+  /@tanstack/react-table@8.17.3(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-5gwg5SvPD3lNAXPuJJz1fOCEZYk9/GeBFH3w/hCgnfyszOIzwkwgp5I7Q4MJtn0WECp84b5STQUDdmvGi8m3nA==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+    dependencies:
+      '@tanstack/table-core': 8.17.3
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
+
+  /@tanstack/table-core@8.17.3:
+    resolution: {integrity: sha512-mPBodDGVL+fl6d90wUREepHa/7lhsghg2A3vFpakEhrhtbIlgNAZiMr7ccTgak5qbHqF14Fwy+W1yFWQt+WmYQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /@tiptap-pro/extension-emoji@2.8.9(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)(emojibase@15.3.1):
     resolution: {integrity: sha512-1BHaJqfF9zaZRObZ+glVaclXKR99Xzb+xLwi2LnRlYnl7ZHtWLcVeA4Ml1Z9Pu6F5oVdG2o/IlEH6E8S18XP3A==}

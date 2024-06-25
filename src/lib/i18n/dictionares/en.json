@@ -31,10 +31,57 @@
     "system": "System",
     "log_out": "Log out"
   },
-  "CreateArticle": {
+  "Article": {
     "title": "Title",
-    "title_placeholder": "Variety of compounds in Orange Juice",
-    "title_hints": "The title should be short and concise",
-    "create_article": "Create Article"
+    "public": "Public - everyone",
+    "restricted": "Restricted - only logged in users",
+    "private": "Private - mods only",
+    "privacy": "Privacy settings",
+    "tags": "Tags",
+    "category": "Category",
+
+    "content": {
+      "create_article": "Create Article"
+    },
+    "info": {
+      "title_placeholder": "Variety of compounds in Orange Juice",
+      "title_hints": "The title should be short and concise",
+      "category_hints": "Select the category that best describes this article",
+      "tags_hints": "Add tags that best describe this article",
+      "privacy_hints": "Select who can see this article",
+      "category_not_found": "No category found",
+      "search_category": "Search category...",
+      "save_changes": "Save changes"
+    }
+  },
+
+  "Categories": {
+    "autoimmune-disease": "Autoimmune Disease",
+    "cancer": "Cancer",
+    "cardiovascular-health": "Cardiovascular Health",
+    "brain-health": "Brain Health",
+    "diabetes-blood-sugar": "Diabetes & Blood Sugar",
+    "ear-nose-throat": "Ear, Nose & Throat",
+    "energy-fatigue": "Energy & Fatigue",
+    "eyes-vision": "Eyes & Vision",
+    "fat-loss": "Fat Loss",
+    "gut-health": "Gut Health",
+    "healthy-aging-longevity": "Healthy Aging & Longevity",
+    "immunity-infectious-disease": "Immunity & Infectious Disease",
+    "joints-bones": "Joints & Bones",
+    "kidney-urinary-health": "Kidney & Urinary Health",
+    "liver-health": "Liver Health",
+    "lungs-breathing": "Lungs & Breathing",
+    "mens-health": "Men's Health",
+    "mental-health": "Mental Health",
+    "pain-inflammation": "Pain & Inflammation",
+    "muscle-gain-exercise": "Muscle Gain & Exercise",
+    "oral-health": "Oral Health",
+    "other": "Other",
+    "pain": "Pain",
+    "pregnancy-children": "Pregnancy & Children",
+    "skin-hair-nails": "Skin, Hair & Nails",
+    "sleep": "Sleep",
+    "womens-health": "Women's Health"
   }
 }

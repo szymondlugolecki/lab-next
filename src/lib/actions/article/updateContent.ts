@@ -15,44 +15,35 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { ArticleUpdateContentSchema } from "@/lib/schemas/article";
 
 // https://github.com/szymondlugolecki/lab-articles.git
 
-const articleUpdateContentSchema = z.object({
-  id: z.string({
-    invalid_type_error: "Invalid article id",
-    required_error: "Article id is required",
-  }),
-  content: z.string({
-    invalid_type_error: "Invalid content",
-    required_error: "Content is required",
-  }),
-  locale: z.enum(LOCALES, {
-    invalid_type_error: "Invalid locale",
-    required_error: "Locale is required",
-  }),
-});
+import { article$ } from "@/lib/schemas";
 
 // const date = new Date().toLocaleDateString('pl-PL')
 
 export default async function updateContent(
-  data: z.infer<typeof articleUpdateContentSchema>
+  data: z.infer<ArticleUpdateContentSchema>
 ) {
+  console.log(0);
   const session = await auth();
   if (!session) {
     throw new Error("Unauthorized");
   }
-
-  const result = articleUpdateContentSchema.safeParse(data);
+  const result = article$.update().content.safeParse(data);
+  console.log(1);
 
   if (!result.success) {
     return {
       error: result.error.flatten().fieldErrors,
     };
   }
+  console.log(2);
 
-  const { id, content, locale } = data;
+  const { id, content, locale } = result.data;
   const language = getLanguageFromLocale(locale);
+  console.log(3);
 
   // Update the article on Github
   const [, failedGithubUpdate] = await attempt(
@@ -63,23 +54,15 @@ export default async function updateContent(
       content,
       message: `Updated article`,
     })
-    // octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-    //   owner: "szymondlugolecki",
-    //   repo: "lab-articles",
-    //   path: `articles/pl/${id}.json`,
-    //   message: `Updated ${title}`,
-    //   content: Buffer.from("[]").toString("base64"),
-    //   headers: {
-    //     "X-GitHub-Api-Version": "2022-11-28",
-    //   },
-    // })
   );
+  console.log(4);
   if (failedGithubUpdate) {
     console.error("Error while updating article on Github", failedGithubUpdate);
     return {
       error: "Error while updating the article on Github",
     };
   }
+  console.log(5);
 
   const searchContentParsed = extractTextFromJSON(JSON.parse(content));
 
@@ -96,6 +79,7 @@ export default async function updateContent(
       )
       .returning({ parsedTitle: articleVariantsTable.parsedTitle })
   );
+  console.log(6);
   if (failedDatabaseUpload) {
     console.error(
       "Error while updating article content in the database",
@@ -105,6 +89,7 @@ export default async function updateContent(
       error: "Error while updating content in the database",
     };
   }
+  console.log(7);
 
   redirect(`/article/${newDatabaseArticle[0].parsedTitle}`);
 }

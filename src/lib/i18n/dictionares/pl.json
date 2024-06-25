@@ -31,10 +31,56 @@
     "system": "Systemowy",
     "log_out": "Wyloguj"
   },
-  "CreateArticle": {
+  "Article": {
     "title": "Tytuł",
-    "title_placeholder": "Różnorodność związków w soku pomarańczowym",
-    "title_hints": "Tytuł powinien być krótki i zwięzły",
-    "create_article": "Utwórz Artykuł"
+    "public": "Publiczny - każdy",
+    "restricted": "Ograniczony - tylko zalogowani użytkownicy",
+    "private": "Prywatny - moderacja",
+    "privacy": "Ustawienia prywatności",
+    "tags": "Tagi",
+    "category": "Kategoria",
+
+    "content": {
+      "create_article": "Utwórz Artykuł"
+    },
+    "info": {
+      "title_placeholder": "Różnorodność związków w soku pomarańczowym",
+      "title_hints": "Tytuł powinien być krótki i zwięzły",
+      "category_hints": "Wybierz kategorię, która najlepiej opisuje ten artykuł",
+      "tags_hints": "Dodaj tagi, które najlepiej opisują ten artykuł",
+      "privacy_hints": "Wybierz, kto może zobaczyć ten artykuł",
+      "category_not_found": "Nie znaleziono kategorii",
+      "search_category": "Szukaj kategorii...",
+      "save_changes": "Zapisz zmiany"
+    }
+  },
+  "Categories": {
+    "autoimmune-disease": "Choroby autoimmunologiczne",
+    "cancer": "Rak",
+    "cardiovascular-health": "Zdrowie serca",
+    "brain-health": "Zdrowie mózgu",
+    "diabetes-blood-sugar": "Cukrzyca i poziom cukru we krwi",
+    "ear-nose-throat": "Ucho, nos, gardło",
+    "energy-fatigue": "Energia i zmęczenie",
+    "eyes-vision": "Oczy i wzrok",
+    "fat-loss": "Utrata tkanki tłuszczowej",
+    "gut-health": "Zdrowie jelit",
+    "healthy-aging-longevity": "Zdrowe starzenie i długowieczność",
+    "immunity-infectious-disease": "Odporność i choroby zakaźne",
+    "joints-bones": "Stawy i kości",
+    "kidney-urinary-health": "Zdrowie nerek i układu moczowego",
+    "liver-health": "Zdrowie wątroby",
+    "lungs-breathing": "Płuca i oddychanie",
+    "mens-health": "Zdrowie mężczyzn",
+    "mental-health": "Zdrowie psychiczne",
+    "pain-inflammation": "Ból i zapalenie",
+    "muscle-gain-exercise": "Przyrost masy mięśniowej i ćwiczenia",
+    "oral-health": "Zdrowie jamy ustnej",
+    "other": "Inne",
+    "pain": "Ból",
+    "pregnancy-children": "Ciąża i dzieci",
+    "skin-hair-nails": "Skóra, włosy i paznokcie",
+    "sleep": "Sen",
+    "womens-health": "Zdrowie kobiet"
   }
 }

@@ -2,6 +2,13 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Language, Locale } from "./constants";
 import { JSONContent } from "@tiptap/react";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+import Bold from "@tiptap/extension-bold";
+import sanitizeHtml from "sanitize-html";
+import { generateHTML } from "@tiptap/html";
+import { octokit } from "./server/clients";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,13 +33,13 @@ export const parseArticleTitle = (title: string) =>
   title
     .toString()
     .replaceAll("&", "and")
-    .split(",")
+    .split(/[ ,]+/)
     .filter((x) => x)
     .join("-")
     .toLowerCase();
 
-export const getArticlePath = (id: string, language: Language) =>
-  `articles/${language}/${id}.json`;
+export const getArticlePath = (articleVariantId: string, language: Language) =>
+  `articles/${language}/${articleVariantId}.json`;
 
 export const extractTextFromJSON = (json: JSONContent) => {
   let text = "";
@@ -58,4 +65,55 @@ export const getLanguageFromLocale = (locale: Locale): Language => {
   }
 
   return "en";
+};
+
+// {
+//   content?: string[] | undefined;
+// }
+
+export const errorToToast = (error: string | Record<string, string[]>) => {
+  if (typeof error === "string") {
+    return [error];
+  }
+
+  return Object.entries(error).map(
+    ([key, value]) => `${key}: ${value.join(". ")}`
+  );
+};
+
+export const fetchArticleHTML = async (path: string) => {
+  const { data } = await octokit.request(
+    "GET /repos/{owner}/{repo}/contents/{path}",
+    {
+      owner: process.env.GH_REPO_OWNER,
+      repo: process.env.GH_REPO_NAME,
+      path,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+  // console.log("data", typeof data, data);
+
+  if (!("content" in data)) {
+    return "No content found";
+  }
+
+  const contentStringified = Buffer.from(data.content, "base64").toString(
+    "utf-8"
+  );
+  const jsonContent = JSON.parse(contentStringified);
+  const document = {
+    type: "doc",
+    content: [
+      {
+        type: "paragraph",
+        content: jsonContent,
+      },
+    ],
+  };
+
+  return sanitizeHtml(
+    generateHTML(document, [Document, Paragraph, Text, Bold])
+  );
 };

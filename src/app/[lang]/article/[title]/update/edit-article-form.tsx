@@ -16,49 +16,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import createArticle from "@/lib/actions/article/create";
 import { Input } from "@/components/ui/input";
 import { useParams } from "next/navigation";
-import { Language } from "@/lib/constants";
+import { Locale } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
-import { ArticleCreateSchema } from "@/lib/schemas/article";
-import { redirect } from "next/dist/server/api-utils";
-import { permanentRedirect, useRouter } from "@/lib/i18n/navigation";
+import { ArticleUpdateInfoSchema } from "@/lib/schemas/article";
+import edit from "@/lib/actions/article/edit";
+import { CategoryCombobox } from "@/components/form/category-combobox";
+import { Asterisk } from "@/components/asterisk";
 
-export function CreateArticleForm() {
-  const { lang } = useParams<{ lang: Language }>();
+export function EditArticleForm({
+  defaultValues,
+}: {
+  defaultValues?: z.infer<ArticleUpdateInfoSchema>;
+}) {
+  const { lang } = useParams<{ lang: Locale; title: string }>();
   const { toast } = useToast();
   const t = useTranslations("Article");
-  const router = useRouter();
 
   // 1. Define your form.
-  const form = useForm<z.infer<ArticleCreateSchema>>({
-    resolver: zodResolver(article$.create(lang)),
+  const form = useForm<z.infer<ArticleUpdateInfoSchema>>({
+    resolver: zodResolver(article$.update(lang).info),
     mode: "onChange",
-    defaultValues: {
-      title: "",
-      language: lang,
-    },
+    defaultValues,
   });
 
-  const onSubmit = async ({
-    title,
-    language,
-  }: z.infer<ArticleCreateSchema>) => {
-    const response = await createArticle({ title, language });
+  const onSubmit = async (data: z.infer<ArticleUpdateInfoSchema>) => {
+    const response = await edit(data);
     if (response?.success) {
-      router.push({
-        pathname: "/article/[title]/update",
-        params: { title: response.parsedTitle },
-      });
-      // permanentRedirect({
-      //   pathname: "/article/[title]/update",
-      //   params: { title: response.title },
-      // });
       toast({
         title: "Success",
-        description: "Article created!",
+        description: "Edited article info!",
       });
       // form.reset();
     } else {
@@ -89,22 +78,23 @@ export function CreateArticleForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="select-none">{t("title")}</FormLabel>
+              <FormLabel className="select-none">
+                {t("title")}
+                <Asterisk />
+              </FormLabel>
               <FormControl>
-                <input
-                  placeholder={t("info.title_placeholder")}
-                  className="flex h-14 w-full rounded-none text-2xl font-semibold border-0 focus:border-b border-input bg-transparent ring-0 outline-none py-1 shadow-sm transition-all placeholder:text-muted-foreground"
-                  {...field}
-                />
+                <Input {...field} />
               </FormControl>
               <FormDescription>{t("info.title_hints")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        <CategoryCombobox form={form} />
+
         <FormField
           control={form.control}
-          name="language"
+          name="category"
           render={({ field }) => (
             <FormItem>
               <FormControl className="hidden">
@@ -114,13 +104,8 @@ export function CreateArticleForm() {
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={
-            form.formState.isSubmitting || form.formState.isSubmitSuccessful
-          }
-        >
-          {t("content.create_article")}
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {t("info.save_changes")}
         </Button>
       </form>
     </Form>

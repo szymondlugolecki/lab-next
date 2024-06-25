@@ -31,6 +31,7 @@ export const CATEGORIES_MAP = [
   { key: "Sleep", value: "sleep" },
   { key: "Women’s Health", value: "womens-health" },
 ] as const;
+export const CATEGORIES = CATEGORIES_MAP.map(({ value }) => value);
 
 export type Tag = (typeof TAGS_MAP)[number]["value"];
 export const TAGS_MAP = [
@@ -71,6 +72,7 @@ export const TAGS_MAP = [
   { key: "Autoimmunity", value: "autoimmunity" },
   { key: "Cancer", value: "cancer" },
 ] as const;
+export const TAGS = TAGS_MAP.map(({ value }) => value);
 
 export type Role = (typeof ROLES)[number];
 export const ROLES = [
