@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Language, Locale } from "./constants";
+import { Language, Locale, Role } from "./constants";
 import { JSONContent } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -38,8 +38,24 @@ export const parseArticleTitle = (title: string) =>
     .join("-")
     .toLowerCase();
 
+export const getURLFriendlyEmail = (email: string) => {
+  return email.split("@")[0];
+};
+
 export const getArticlePath = (articleVariantId: string, language: Language) =>
   `articles/${language}/${articleVariantId}.json`;
+
+export const isModerator = (role: Role) => {
+  return role === "moderator" || role === "admin";
+};
+
+export const getRoleRank = (role: Role) => {
+  if (role === "admin") return 0;
+  if (role === "moderator") return 1;
+  if (role === "guest") return 2;
+  if (role === "awaiting-approval") return 3;
+  return 4;
+};
 
 export const extractTextFromJSON = (json: JSONContent) => {
   let text = "";

@@ -1,6 +1,6 @@
 {
   "Index": {
-    "h1": "Ekploruj kolekcję notatek badawczych",
+    "h1": "Eksploruj notatki medyczne",
     "p": "Szukaj artykułów o substancjach, schorzeniach, parametrach zdrowotnych i kategoriach",
     "input": "Szukaj...",
     "new_articles": "Nowe artykuły",
@@ -24,18 +24,24 @@
     "profile": "Profil",
     "create_new_article": "Utwórz nowy artykuł",
     "user_list": "Lista użytkowników",
+    "article_list": "Lista artykułów",
     "language": "Język",
     "dark_mode": "Tryb Nocny",
     "dark": "Ciemny",
     "light": "Jasny",
     "system": "Systemowy",
-    "log_out": "Wyloguj"
+    "log_out": "Wyloguj",
+    "user_joined": "Dołączył(a) {date, date, medium}"
   },
   "Article": {
     "title": "Tytuł",
-    "public": "Publiczny - każdy",
-    "restricted": "Ograniczony - tylko zalogowani użytkownicy",
-    "private": "Prywatny - moderacja",
+    "public": "Publiczny",
+    "public_description": "Publiczny - każdy",
+    "restricted": "Ograniczony",
+    "restricted_description": "Ograniczony - tylko zalogowani użytkownicy",
+    "private": "Prywatny",
+    "private_with_description": "Prywatny - moderacja",
+
     "privacy": "Ustawienia prywatności",
     "tags": "Tagi",
     "category": "Kategoria",
@@ -52,6 +58,31 @@
       "category_not_found": "Nie znaleziono kategorii",
       "search_category": "Szukaj kategorii...",
       "save_changes": "Zapisz zmiany"
+    },
+    "admin": {
+      "search_articles": "Szukaj artykułów..."
+    }
+  },
+  "Table": {
+    "next_page": "Następna",
+    "previous_page": "Wstecz",
+    "no_results": "Brak wyników",
+    "selected_count": "Zaznaczono {selectedCount} z {rowCount} rzędów",
+    "select_all": "Zaznacz wszystkie",
+    "select_row": "Zaznacz rząd",
+    "open_menu": "Otwórz menu",
+
+    "users": {
+      "name": "Imię",
+      "role": "Rola",
+      "joined": "Dołączył(a)",
+      "copy_user_id": "Kopiuj ID",
+      "menu_actions": "Akcje",
+      "change_role": "Zmień rolę",
+      "approve": "Zaakceptuj",
+      "view_articles": "Zobacz artykuły",
+      "view_comments": "Zobacz komentarze",
+      "search_users": "Szukaj użytkowników..."
     }
   },
   "Categories": {
@@ -82,5 +113,11 @@
     "skin-hair-nails": "Skóra, włosy i paznokcie",
     "sleep": "Sen",
     "womens-health": "Zdrowie kobiet"
+  },
+  "Roles": {
+    "admin": "Admin",
+    "moderator": "Moderator",
+    "guest": "Gość",
+    "awaiting-approval": "Oczekuje na akceptację"
   }
 }

@@ -16,6 +16,22 @@ export const pathnames = {
     en: "/search",
     pl: "/szukaj",
   },
+  "/user/[id]/articles": {
+    en: "/user/[id]/articles",
+    pl: "/uzytkownik/[id]/artykuly",
+  },
+  "/user/[id]/comments": {
+    en: "/user/[id]/comments",
+    pl: "/uzytkownik/[id]/komentarze",
+  },
+  "/admin/users": {
+    en: "/admin/users",
+    pl: "/admin/uzytkownicy",
+  },
+  "/admin/articles": {
+    en: "/admin/articles",
+    pl: "/admin/artykuly",
+  },
   "/article/create": {
     en: "/article/create",
     pl: "/artykul/stworz",

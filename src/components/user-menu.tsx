@@ -19,6 +19,7 @@ import {
   UserGroupIcon,
   UserIcon,
   LanguageIcon,
+  DocumentIcon,
 } from "@heroicons/react/24/outline";
 import { MoonIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
@@ -72,9 +73,22 @@ export function UserMenu({
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="flex items-center gap-x-1.5">
-            <UserGroupIcon className="w-4 h-4" />
-            {t("user_list")}
+          <DropdownMenuItem className="p-0">
+            <Link
+              href="/admin/users"
+              className="flex items-center gap-x-1.5 w-full px-2 py-1.5"
+            >
+              <UserGroupIcon className="w-4 h-4" /> {t("user_list")}
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem className="p-0">
+            <Link
+              href="/admin/articles"
+              className="flex items-center gap-x-1.5 w-full px-2 py-1.5"
+            >
+              <DocumentIcon className="w-4 h-4" /> {t("article_list")}
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 

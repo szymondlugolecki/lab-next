@@ -100,5 +100,11 @@ export const LANGUAGES_MAP = [
 ] as const;
 export const LANGUAGES = LANGUAGES_MAP.map(({ value }) => value);
 
+export const COUNTRY_CODES_MAP = [
+  { key: "en", value: "GB" },
+  { key: "pl", value: "PL" },
+] as const;
+export const COUNTRY_CODES = COUNTRY_CODES_MAP.map(({ value }) => value);
+
 export type Locale = (typeof LOCALES)[number];
 export const LOCALES = ["en", "pl"] as const;

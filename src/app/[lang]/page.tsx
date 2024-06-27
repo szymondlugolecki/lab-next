@@ -18,6 +18,9 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useFormatter } from "next-intl";
+import { SkeletonArticle } from "./(components)/skeleton-article";
+import { getFormatter, getTranslations } from "next-intl/server";
+import { ArticlesList } from "./(components)/articles-list";
 
 export const runtime = "edge";
 
@@ -35,7 +38,24 @@ const filters = {
 
 type FilterKeys = keyof typeof filters;
 
-export default function Page({
+const sleep = (seconds: number) =>
+  new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+
+const fetchArticles = async () => {
+  await sleep(3);
+
+  const article = {
+    title: "Unlocking the Secrets of the Human Genome",
+    date: new Date(),
+    description:
+      "Dive into the latest advancements in genomic research and how they are transforming the field of medicine.",
+    minutesToRead: 5,
+  };
+
+  return [article, article, article];
+};
+
+export default async function Page({
   searchParams,
 }: {
   searchParams?: {
@@ -43,10 +63,12 @@ export default function Page({
     page?: string;
   };
 }) {
-  const t = useTranslations("Index");
+  const t = await getTranslations("Index");
+  const format = await getFormatter();
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const format = useFormatter();
+
+  const articles = await fetchArticles();
 
   console.log("t", t("h1"));
 
@@ -106,16 +128,25 @@ export default function Page({
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="flex items-center gap-x-2 pb-3">
             <p className="font-semibold">{t("new_articles")}</p>
-            <span className="text-muted-foreground text-sm">•</span>
+            {/* <span className="text-muted-foreground text-sm">•</span>
             <Link
               href="/articles"
               className="flex items-center gap-x-1 leading-4 text-sm text-muted-foreground hover:underline"
             >
               {t("browse_all")}{" "}
               <ArrowRightIcon className="w-3 h-3 stroke-[3px]" />
-            </Link>
+            </Link> */}
           </div>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-y-8 px-1">
+            <Suspense
+              fallback={Array.from({ length: 3 }).map((_, index) => (
+                <SkeletonArticle key={index} />
+              ))}
+            >
+              <ArticlesList />
+            </Suspense>
+          </div>
+          {/* <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader>
                 <Image
@@ -230,10 +261,11 @@ export default function Page({
                 </Link>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
         </div>
       </section>
-      <section className="py-12 md:py-20 lg:py-24">
+
+      {/* <section className="py-12 md:py-20 lg:py-24">
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className=" pb-3">
             <p className="font-semibold">{t("recently_edited")}</p>
@@ -334,7 +366,7 @@ export default function Page({
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
     </main>
 
     // <main className="flex flex-col items-center min-h-screen p-6">

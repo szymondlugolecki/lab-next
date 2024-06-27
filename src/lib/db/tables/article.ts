@@ -134,7 +134,7 @@ export const articleVariantsRelations = relations(
     article: one(articlesTable, {
       fields: [articleVariantsTable.articleId],
       references: [articlesTable.id],
-      relationName: "article",
+      relationName: "variants",
     }),
   })
 );

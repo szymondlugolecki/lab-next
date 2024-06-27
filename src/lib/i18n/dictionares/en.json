@@ -24,18 +24,23 @@
     "profile": "Profile",
     "create_new_article": "Create New Article",
     "user_list": "User List",
+    "article_list": "Article List",
     "language": "Language",
     "dark_mode": "Dark Mode",
     "dark": "Dark",
     "light": "Light",
     "system": "System",
-    "log_out": "Log out"
+    "log_out": "Log out",
+    "user_joined": "Joined {date, date, medium}"
   },
   "Article": {
     "title": "Title",
-    "public": "Public - everyone",
-    "restricted": "Restricted - only logged in users",
-    "private": "Private - mods only",
+    "public": "Public",
+    "public_description": "Public - everyone",
+    "restricted": "Restricted",
+    "restricted_description": "Restricted - only logged in users",
+    "private": "Private",
+    "private_with_description": "Private - mods only",
     "privacy": "Privacy settings",
     "tags": "Tags",
     "category": "Category",
@@ -52,9 +57,46 @@
       "category_not_found": "No category found",
       "search_category": "Search category...",
       "save_changes": "Save changes"
+    },
+    "admin": {
+      "search_articles": "Search articles..."
     }
   },
+  "Table": {
+    "next_page": "Next",
+    "previous_page": "Previous",
+    "no_results": "No results",
+    "selected_count": "{selectedCount} of {rowCount} row(s) selected",
+    "select_all": "Select all",
+    "select_row": "Select row",
+    "open_menu": "Open menu",
 
+    "users": {
+      "name": "Name",
+      "role": "Role",
+      "joined": "Joined",
+      "copy_user_id": "Copy ID",
+      "menu_actions": "Actions",
+      "change_role": "Change role",
+      "approve": "Approve",
+      "view_articles": "View articles",
+      "view_comments": "View comments",
+      "search_users": "Search users..."
+    },
+    "articles": {
+      "copy_article_id": "Copy ID",
+      "title": "Title",
+      "author": "Author",
+      "category": "Category",
+      "privacy": "Privacy",
+      "created_at": "Created",
+      "menu_actions": "Actions",
+      "edit_info": "Edit info",
+      "delete": "Delete",
+      "search_articles": "Search articles...",
+      "view_article": "View article"
+    }
+  },
   "Categories": {
     "autoimmune-disease": "Autoimmune Disease",
     "cancer": "Cancer",
@@ -83,5 +125,16 @@
     "skin-hair-nails": "Skin, Hair & Nails",
     "sleep": "Sleep",
     "womens-health": "Women's Health"
+  },
+  "Roles": {
+    "admin": "Admin",
+    "moderator": "Moderator",
+    "guest": "Guest",
+    "awaiting-approval": "Awaiting Approval"
+  },
+  "Privacy": {
+    "public": "Public",
+    "restricted": "Restricted",
+    "private": "Private"
   }
 }

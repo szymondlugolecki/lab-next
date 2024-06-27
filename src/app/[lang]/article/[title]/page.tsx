@@ -86,10 +86,10 @@ const getArticleContent = async (title: string, language: Language) => {
 export default async function Article({
   params,
 }: {
-  params: { title: string };
+  params: { title: string; lang: Language };
 }) {
   console.log("params", params);
-  const { data, error } = await getArticleContent(params.title, "pl");
+  const { data, error } = await getArticleContent(params.title, params.lang);
 
   if (!data) {
     return <div>{error}</div>;
