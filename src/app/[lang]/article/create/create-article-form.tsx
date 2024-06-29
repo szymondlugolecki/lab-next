@@ -49,11 +49,11 @@ export function CreateArticleForm() {
     const response = await createArticle({ title, language });
     if (response?.success) {
       router.push({
-        pathname: "/article/[title]/update",
+        pathname: "/article/[title]/edit",
         params: { title: response.parsedTitle },
       });
       // permanentRedirect({
-      //   pathname: "/article/[title]/update",
+      //   pathname: "/article/[title]/edit",
       //   params: { title: response.title },
       // });
       toast({

@@ -11,7 +11,7 @@ import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import sanitizeHtml from "sanitize-html";
 import { generateHTML } from "@tiptap/html";
-import { EditArticleForm } from "./edit-article-form";
+// import { EditArticleForm } from "./edit-article-form";
 
 export const runtime = "edge";
 
@@ -79,7 +79,7 @@ export default async function Page({
       <section className="py-3 bg-card md:py-14 lg:py-6">
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="max-w-3xl mx-auto">
-            <EditArticleForm defaultValues={articleData} />
+            {/* <EditArticleForm defaultValues={articleData} /> */}
             <Tiptap id={articleData.id} fetchedContent={articleContent} />
           </div>
         </div>

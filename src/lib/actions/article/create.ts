@@ -95,7 +95,7 @@ export default async function create(data: z.infer<ArticleCreateSchema>) {
 
   // console.log(
   //   "redirecting to",
-  //   `${process.env.NEXT_PUBLIC_BASE_URL}/${language}/article/${parsedTitle}/update`
+  //   `${process.env.NEXT_PUBLIC_BASE_URL}/${language}/article/${parsedTitle}/edit`
   // );
 
   return {
@@ -105,19 +105,19 @@ export default async function create(data: z.infer<ArticleCreateSchema>) {
 
   // Doesn't throw an error, but doesn't redirect either:
   // NextResponse.redirect(
-  //   `${process.env.NEXT_PUBLIC_BASE_URL}/${language}/article/${parsedTitle}/update`
+  //   `${process.env.NEXT_PUBLIC_BASE_URL}/${language}/article/${parsedTitle}/edit`
   // );
 
   // Error + no redirect:
   // I think this redirect is not compatible with edge runtime or actions
   // redirect({
-  //   pathname: "/article/[title]/update",
+  //   pathname: "/article/[title]/edit",
   //   params: { title: parsedTitle },
   // });
 
-  // console.log("redirecting to", `/article/${parsedTitle}/update`);
+  // console.log("redirecting to", `/article/${parsedTitle}/edit`);
   // permanentRedirect({
-  //   pathname: "/article/[title]/update",
+  //   pathname: "/article/[title]/edit",
   //   params: { title: parsedTitle },
   // });
 }

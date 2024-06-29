@@ -16,18 +16,18 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { ArticleUpdateInfoSchema } from "@/lib/schemas/article";
+import { ArticleEditInfoSchema } from "@/lib/schemas/article";
 
 // https://github.com/szymondlugolecki/lab-articles.git
 
 import { article$ } from "@/lib/schemas";
 
-export default async function edit(data: z.infer<ArticleUpdateInfoSchema>) {
+export default async function edit(data: z.infer<ArticleEditInfoSchema>) {
   const session = await auth();
   if (!session) {
     throw new Error("Unauthorized");
   }
-  const result = article$.update().info.safeParse(data);
+  const result = article$.edit().info.safeParse(data);
   if (!result.success) {
     return {
       error: result.error.flatten().fieldErrors,

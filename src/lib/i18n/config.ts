@@ -40,9 +40,9 @@ export const pathnames = {
     en: "/article/[title]",
     pl: "/artykul/[title]",
   },
-  "/article/[title]/update": {
-    en: "/article/[title]/update",
-    pl: "/artykul/[title]/zaktualizuj",
+  "/article/[title]/edit": {
+    en: "/article/[title]/edit",
+    pl: "/artykul/[title]/edytuj",
   },
   "/privacy": {
     en: "/privacy",
@@ -52,7 +52,7 @@ export const pathnames = {
     en: "/tos",
     pl: "/zasady-uzytkowania",
   },
-  // /article/${parsedTitle}/update
+  // /article/${parsedTitle}/edit
   // If locales use different paths, you can
   // specify each external path per locale
   // '/about': {

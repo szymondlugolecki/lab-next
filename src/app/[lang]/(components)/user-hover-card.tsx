@@ -28,7 +28,7 @@ export function UserHoverCard({ user }: { user: UserHoverCard }) {
       .join("");
   };
 
-  console.log("user.image", user.image);
+  // console.log("user.image", user.image);
 
   return (
     <HoverCard>

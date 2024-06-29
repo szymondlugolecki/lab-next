@@ -1,9 +1,9 @@
 import { JSONContent, useCurrentEditor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
-import updateContent from "@/lib/actions/article/updateContent";
+import editContent from "@/lib/actions/article/editContent";
 import { useParams } from "next/navigation";
 import { Locale } from "@/lib/constants";
-import { ArticleUpdateContentSchema } from "@/lib/schemas/article";
+import { ArticleEditContentSchema } from "@/lib/schemas/article";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { article$ } from "@/lib/schemas";
@@ -23,8 +23,8 @@ export function CustomEditorMenu({
   const {
     handleSubmit,
     formState: { isSubmitting, isValid },
-  } = useForm<ArticleUpdateContentSchema>({
-    resolver: zodResolver(article$.update().content),
+  } = useForm<ArticleEditContentSchema>({
+    resolver: zodResolver(article$.edit().content),
     mode: "onChange",
   });
 
@@ -36,7 +36,7 @@ export function CustomEditorMenu({
 
   const onSubmit = handleSubmit(async (data) => {
     console.log("on submit");
-    const response = await updateContent({
+    const response = await editContent({
       content: JSON.stringify(contentJSON),
       locale: lang,
       id,
@@ -50,7 +50,7 @@ export function CustomEditorMenu({
     } else {
       toast({
         title: "Success",
-        description: "Article updated!",
+        description: "Article edited!",
       });
     }
   });
@@ -61,7 +61,7 @@ export function CustomEditorMenu({
       className="bg-popover rounded-md z-10 p-3 flex justify-end"
     >
       <Button type="submit" disabled={pending || isSubmitting}>
-        {isSubmitting ? "Updating Article..." : "Update Article"}
+        {isSubmitting ? "Edit Article..." : "Edit Article"}
       </Button>
     </form>
   );

@@ -41,7 +41,6 @@
     "restricted_description": "Ograniczony - tylko zalogowani użytkownicy",
     "private": "Prywatny",
     "private_with_description": "Prywatny - moderacja",
-
     "privacy": "Ustawienia prywatności",
     "tags": "Tagi",
     "category": "Kategoria",
@@ -58,9 +57,6 @@
       "category_not_found": "Nie znaleziono kategorii",
       "search_category": "Szukaj kategorii...",
       "save_changes": "Zapisz zmiany"
-    },
-    "admin": {
-      "search_articles": "Szukaj artykułów..."
     }
   },
   "Table": {
@@ -83,6 +79,21 @@
       "view_articles": "Zobacz artykuły",
       "view_comments": "Zobacz komentarze",
       "search_users": "Szukaj użytkowników..."
+    },
+    "articles": {
+      "copy_article_id": "Kopiuj ID",
+      "title": "Tytuł",
+      "author": "Autor",
+      "category": "Kategoria",
+      "privacy": "Ustawienia prywatności",
+      "created_at": "Utworzono",
+      "menu_actions": "Akcje",
+      "edit_info": "Edytuj dane",
+      "delete": "Usuń",
+      "search_articles": "Szukaj artykułów...",
+      "view_article": "Zobacz artykuł",
+      "edit_article_info": "Edytuj dane",
+      "edit_article_content": "Edytuj treść"
     }
   },
   "Categories": {
@@ -119,5 +130,10 @@
     "moderator": "Moderator",
     "guest": "Gość",
     "awaiting-approval": "Oczekuje na akceptację"
+  },
+  "Privacy": {
+    "public": "Publiczny",
+    "restricted": "Ograniczony",
+    "private": "Prywatny"
   }
 }

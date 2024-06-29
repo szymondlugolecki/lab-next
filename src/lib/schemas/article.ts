@@ -16,9 +16,13 @@ export const create = (language: Language = "en") =>
     }),
   });
 
-export const update = (language: Language = "en") => ({
+export const edit = (language: Language = "en") => ({
   info: z.object({
     id: z.string({
+      invalid_type_error: "Invalid article id",
+      required_error: "Article id is required",
+    }),
+    variantId: z.string({
       invalid_type_error: "Invalid article id",
       required_error: "Article id is required",
     }),
@@ -64,5 +68,5 @@ export const update = (language: Language = "en") => ({
 });
 
 export type ArticleCreateSchema = ReturnType<typeof create>;
-export type ArticleUpdateInfoSchema = ReturnType<typeof update>["info"];
-export type ArticleUpdateContentSchema = ReturnType<typeof update>["content"];
+export type ArticleEditInfoSchema = ReturnType<typeof edit>["info"];
+export type ArticleEditContentSchema = ReturnType<typeof edit>["content"];

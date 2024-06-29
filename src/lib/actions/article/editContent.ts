@@ -15,7 +15,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { ArticleUpdateContentSchema } from "@/lib/schemas/article";
+import { ArticleEditContentSchema } from "@/lib/schemas/article";
 
 // https://github.com/szymondlugolecki/lab-articles.git
 
@@ -23,15 +23,15 @@ import { article$ } from "@/lib/schemas";
 
 // const date = new Date().toLocaleDateString('pl-PL')
 
-export default async function updateContent(
-  data: z.infer<ArticleUpdateContentSchema>
+export default async function editContent(
+  data: z.infer<ArticleEditContentSchema>
 ) {
   console.log(0);
   const session = await auth();
   if (!session) {
     throw new Error("Unauthorized");
   }
-  const result = article$.update().content.safeParse(data);
+  const result = article$.edit().content.safeParse(data);
   console.log(1);
 
   if (!result.success) {

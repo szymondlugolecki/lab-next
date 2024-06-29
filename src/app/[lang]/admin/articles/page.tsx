@@ -6,6 +6,7 @@ import { Language } from "@/lib/constants";
 async function getData(lang: Language): Promise<AdminTableArticle[]> {
   const articles = await db.query.articlesTable.findMany({
     columns: {
+      id: true,
       privacy: true,
       category: true,
       tags: true,
@@ -19,7 +20,7 @@ async function getData(lang: Language): Promise<AdminTableArticle[]> {
           parsedTitle: true,
           createdAt: true,
         },
-        where: (variants, { eq }) => eq(variants.language, lang),
+        // where: (variants, { eq }) => eq(variants.language, lang),
         with: {
           author: {
             columns: {
@@ -40,10 +41,11 @@ async function getData(lang: Language): Promise<AdminTableArticle[]> {
   return articles
     .filter((article) => article.variants.length)
     .map((article) => ({
+      id: article.id,
       privacy: article.privacy,
       category: article.category,
       tags: article.tags,
-      id: article.variants[0].id,
+      variantId: article.variants[0].id,
       language: article.variants[0].language,
       title: article.variants[0].title,
       parsedTitle: article.variants[0].parsedTitle,

@@ -15,34 +15,51 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 import { Input } from "@/components/ui/input";
 import { useParams } from "next/navigation";
 import { Locale } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
-import { ArticleUpdateInfoSchema } from "@/lib/schemas/article";
+import { ArticleEditInfoSchema } from "@/lib/schemas/article";
 import edit from "@/lib/actions/article/edit";
 import { CategoryCombobox } from "@/components/form/category-combobox";
 import { Asterisk } from "@/components/asterisk";
+import { SelectUser } from "@/lib/db/tables/user";
+import { db } from "@/lib/db";
+import { eq } from "drizzle-orm";
+import { articleVariantsTable } from "@/lib/db/tables/article";
+import { EditInfoArticle } from "./edit-article-sheet";
 
 export function EditArticleForm({
+  lang,
   defaultValues,
 }: {
-  defaultValues?: z.infer<ArticleUpdateInfoSchema>;
+  lang: Locale;
+  defaultValues: z.infer<ArticleEditInfoSchema>;
 }) {
-  const { lang } = useParams<{ lang: Locale; title: string }>();
   const { toast } = useToast();
   const t = useTranslations("Article");
 
   // 1. Define your form.
-  const form = useForm<z.infer<ArticleUpdateInfoSchema>>({
-    resolver: zodResolver(article$.update(lang).info),
+  const form = useForm<z.infer<ArticleEditInfoSchema>>({
+    resolver: zodResolver(article$.edit(lang).info),
     mode: "onChange",
     defaultValues,
   });
 
-  const onSubmit = async (data: z.infer<ArticleUpdateInfoSchema>) => {
+  const onSubmit = async (data: z.infer<ArticleEditInfoSchema>) => {
     const response = await edit(data);
     if (response?.success) {
       toast({
@@ -65,6 +82,21 @@ export function EditArticleForm({
       });
     }
   };
+
+  //   <div className="grid gap-4 py-4">
+  //     <div className="grid grid-cols-4 items-center gap-4">
+  //       <Label htmlFor="name" className="text-right">
+  //         Name
+  //       </Label>
+  //       <Input id="name" value="Pedro Duarte" className="col-span-3" />
+  //     </div>
+  //     <div className="grid grid-cols-4 items-center gap-4">
+  //       <Label htmlFor="username" className="text-right">
+  //         Username
+  //       </Label>
+  //       <Input id="username" value="@peduarte" className="col-span-3" />
+  //     </div>
+  //   </div>
 
   return (
     <Form {...form}>
@@ -104,9 +136,18 @@ export function EditArticleForm({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={form.formState.isSubmitting}>
-          {t("info.save_changes")}
-        </Button>
+
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {t("info.save_changes")}
+            </Button>
+          </SheetClose>
+        </SheetFooter>
+
+        {/* <Button type="submit"  disabled={form.formState.isSubmitting}>
+        {t("info.save_changes")}
+        </Button> */}
       </form>
     </Form>
   );

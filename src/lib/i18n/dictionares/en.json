@@ -94,7 +94,9 @@
       "edit_info": "Edit info",
       "delete": "Delete",
       "search_articles": "Search articles...",
-      "view_article": "View article"
+      "view_article": "View article",
+      "edit_article_info": "Edit info",
+      "edit_article_content": "Edit content"
     }
   },
   "Categories": {

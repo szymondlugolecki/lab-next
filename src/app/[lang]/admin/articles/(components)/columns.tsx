@@ -30,12 +30,12 @@ import {
 // You can use a Zod schema here if you want.
 export type AdminTableArticle = Pick<
   SelectArticle,
-  "privacy" | "category" | "tags"
+  "id" | "privacy" | "category" | "tags"
 > &
   Pick<
     SelectArticleVariant,
-    "id" | "language" | "title" | "parsedTitle" | "createdAt"
-  > & {
+    "language" | "title" | "parsedTitle" | "createdAt"
+  > & { variantId: SelectArticleVariant["id"] } & {
     author: Pick<
       SelectUser,
       "id" | "email" | "image" | "name" | "role" | "createdAt"
@@ -49,10 +49,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "@/lib/i18n/navigation";
-import { SelectArticle, SelectArticleVariant } from "@/lib/db/tables/article";
+import {
+  SelectArticle,
+  SelectArticleVariant,
+  articleVariantsTable,
+} from "@/lib/db/tables/article";
 import { SelectUser } from "@/lib/db/tables/user";
 import ReactCountryFlag from "react-country-flag";
 import { UserHoverCard } from "@/app/[lang]/(components)/user-hover-card";
+import { db } from "@/lib/db";
+import { eq } from "drizzle-orm";
+import { EditArticleSheet } from "@/app/[lang]/(components)/edit-article-sheet";
+import { useState } from "react";
+import { Sheet } from "@/components/ui/sheet";
 
 export const columns: ColumnDef<AdminTableArticle>[] = [
   {
@@ -87,40 +96,68 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
       const article = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">
-                {table.options.meta?.t("Table.open_menu")}
-              </span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>
-              {table.options.meta?.t("Table.articles.menu_actions")}
-            </DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(article.id)}
-            >
-              {table.options.meta?.t("Table.articles.copy_article_id")}
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem className="p-0">
-              <Link
-                href={{
-                  pathname: "/article/[title]",
-                  params: { title: article.parsedTitle },
-                }}
-                className="w-full px-2 py-1.5"
+        <Sheet>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">
+                  {table.options.meta?.t("Table.open_menu")}
+                </span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>
+                {table.options.meta?.t("Table.articles.menu_actions")}
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(article.id)}
               >
-                {table.options.meta?.t("Table.articles.view_article")}
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+                {table.options.meta?.t("Table.articles.copy_article_id")}
+              </DropdownMenuItem>
+
+              {/* View Article */}
+              <DropdownMenuItem className="p-0">
+                <Link
+                  href={{
+                    pathname: "/article/[title]",
+                    params: { title: article.parsedTitle },
+                  }}
+                  className="w-full px-2 py-1.5"
+                >
+                  {table.options.meta?.t("Table.articles.view_article")}
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              {/* Edit Article Info */}
+              <EditArticleSheet
+                articleData={article}
+                lang={table.options.meta?.lang as Language}
+              >
+                {/* <DropdownMenuItem className="p-0"> */}
+                <button className="w-full px-2 py-1.5 hover:bg-muted relative flex select-none items-center rounded-sm text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground">
+                  {table.options.meta?.t("Table.articles.edit_article_info")}
+                </button>
+                {/* </DropdownMenuItem> */}
+              </EditArticleSheet>
+
+              {/* Edit Article Content */}
+              <DropdownMenuItem className="p-0">
+                <Link
+                  href={{
+                    pathname: "/article/[title]/edit",
+                    params: { title: article.parsedTitle },
+                  }}
+                  className="w-full px-2 py-1.5"
+                >
+                  {table.options.meta?.t("Table.articles.edit_article_content")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Sheet>
       );
     },
   },
@@ -222,11 +259,20 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ table }) => (
-      <div className="text-right">
-        {table.options.meta?.t("Table.articles.created_at")}
-      </div>
-    ),
+
+    header: ({ column, table }) => {
+      return (
+        <div className="text-right">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {table.options.meta?.t("Table.articles.created_at")}
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
     cell: ({ row, table }) => {
       const createdAt = row.getValue("createdAt") as Date;
 

@@ -1,6 +1,7 @@
 import en from "../i18n/dictionares/en.json";
 import type { AdminTableArticle } from "@/app/[lang]/admin/articles/(components)/columns";
 import type { Keys, Formatter } from "./index";
+import type { Language } from "../constants";
 import "@tanstack/react-table";
 // import pl from "../i18n/dictionares/pl.json";
 
@@ -10,6 +11,7 @@ declare module "@tanstack/react-table" {
   interface TableMeta {
     t: (key: Keys) => string;
     f: Formatter;
+    lang: Language;
   }
 }
 
