@@ -3,10 +3,11 @@ export const runtime = "experimental-edge";
 import { auth } from "@/auth";
 import { LOCALES } from "@/lib/constants";
 
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
 
 import { localePrefix, pathnames } from "@/i18n/config";
+import { isModerator } from "./lib/utils";
 
 const publicPages = ["/", "/search"];
 
@@ -20,6 +21,14 @@ const intlMiddleware = createIntlMiddleware({
 const authMiddleware = auth((req) => {
   // private routes here
   const session = req.auth;
+
+  // Protection against unauthorized access to admin panel
+  const { role } = session?.user || {};
+  if (RegExp(`^(/(${LOCALES.join("|")}))\/admin`).test(req.nextUrl.pathname)) {
+    if (!role || !isModerator(role)) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
 
   if (session) {
     return intlMiddleware(req);

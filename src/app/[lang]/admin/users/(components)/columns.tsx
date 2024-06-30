@@ -206,8 +206,8 @@ export const columns: ColumnDef<AdminTableUser>[] = [
           <Image
             src={image}
             alt="Avatar"
-            width={36}
-            height={36}
+            width={30}
+            height={30}
             className="rounded-full"
           />
         </div>

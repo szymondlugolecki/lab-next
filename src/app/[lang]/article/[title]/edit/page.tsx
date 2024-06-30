@@ -11,6 +11,9 @@ import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import sanitizeHtml from "sanitize-html";
 import { generateHTML } from "@tiptap/html";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/lib/i18n/navigation";
+import { EllipsisVertical, SquareArrowOutUpRight } from "lucide-react";
 // import { EditArticleForm } from "./edit-article-form";
 
 export const runtime = "edge";
@@ -80,6 +83,36 @@ export default async function Page({
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="max-w-3xl mx-auto">
             {/* <EditArticleForm defaultValues={articleData} /> */}
+            <div className="flex justify-between gap-x-2 pb-4">
+              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                {articleData.title}
+              </h1>
+              <div className="flex flex-col gap-2 justify-start items-center">
+                <Button variant="ghost" size="icon" asChild>
+                  <Link
+                    href={{
+                      pathname: "/article/[title]",
+                      params: { title: params.title },
+                    }}
+                  >
+                    <SquareArrowOutUpRight className="size-5" />
+                    <span className="sr-only">Read article</span>
+                  </Link>
+                </Button>
+
+                <Button variant="ghost" size="icon" asChild>
+                  <Link
+                    href={{
+                      pathname: "/article/[title]/edit",
+                      params: { title: params.title },
+                    }}
+                  >
+                    <EllipsisVertical className="size-5" />
+                    <span className="sr-only">Edit info</span>
+                  </Link>
+                </Button>
+              </div>
+            </div>
             <Tiptap id={articleData.id} fetchedContent={articleContent} />
           </div>
         </div>

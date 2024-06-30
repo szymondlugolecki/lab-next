@@ -46,7 +46,8 @@
     "category": "Category",
 
     "content": {
-      "create_article": "Create Article"
+      "create_article": "Create Article",
+      "edit_article": "Edit Article"
     },
     "info": {
       "title_placeholder": "Variety of compounds in Orange Juice",
@@ -57,9 +58,6 @@
       "category_not_found": "No category found",
       "search_category": "Search category...",
       "save_changes": "Save changes"
-    },
-    "admin": {
-      "search_articles": "Search articles..."
     }
   },
   "Table": {

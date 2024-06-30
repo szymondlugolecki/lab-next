@@ -46,7 +46,8 @@
     "category": "Kategoria",
 
     "content": {
-      "create_article": "Utwórz Artykuł"
+      "create_article": "Utwórz Artykuł",
+      "edit_article": "Edytuj Artykuł"
     },
     "info": {
       "title_placeholder": "Różnorodność związków w soku pomarańczowym",

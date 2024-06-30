@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { article$ } from "@/lib/schemas";
 import { toast } from "../ui/use-toast";
 import { errorToToast } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import { Spinner } from "../spinner";
 
 export function CustomEditorMenu({
   contentJSON,
@@ -19,6 +21,7 @@ export function CustomEditorMenu({
   pending: boolean;
   id: string;
 }) {
+  const t = useTranslations();
   const { lang } = useParams<{ lang: Locale; title: string }>();
   const {
     handleSubmit,
@@ -55,13 +58,17 @@ export function CustomEditorMenu({
     }
   });
 
+  // Imperfect solution to check if the content has changed
+  // Will still return true if the content is the same, but the user has undone a change
+  const hasChanged = editor.can().chain().focus().undo().run();
+
   return (
     <form
       onSubmit={onSubmit}
       className="bg-popover rounded-md z-10 p-3 flex justify-end"
     >
-      <Button type="submit" disabled={pending || isSubmitting}>
-        {isSubmitting ? "Edit Article..." : "Edit Article"}
+      <Button type="submit" disabled={pending || isSubmitting || !hasChanged}>
+        {isSubmitting ? <Spinner /> : t("Article.content.edit_article")}
       </Button>
     </form>
   );
