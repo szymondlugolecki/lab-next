@@ -31,11 +31,11 @@ export default async function changeRole(data: z.infer<UserRoleChangeSchema>) {
     throw new Error("Unauthorized");
   }
 
-  if (session.user.email !== "szymon.dlugolecki77@gmail.com") {
-    if (isModerator(session.user.role)) {
-      throw new Error("Insufficient permissions");
-    }
+  // if (session.user.email !== "szymon.dlugolecki77@gmail.com") {
+  if (!isModerator(session.user.role)) {
+    throw new Error("Insufficient permissions");
   }
+  // }
 
   const result = user$.role().change.safeParse(data);
   if (!result.success) {
@@ -58,13 +58,13 @@ export default async function changeRole(data: z.infer<UserRoleChangeSchema>) {
     };
   }
   // Can only change the role of users with a lower rank
-  if (session.user.email !== "szymon.dlugolecki77@gmail.com") {
-    if (getRoleRank(user.role) <= getRoleRank(session.user.role)) {
-      return {
-        error: "Insufficient permissions",
-      };
-    }
+  // if (session.user.email !== "szymon.dlugolecki77@gmail.com") {
+  if (getRoleRank(user.role) <= getRoleRank(session.user.role)) {
+    return {
+      error: "Insufficient permissions",
+    };
   }
+  // }
 
   // Update user role in the database
   const [, failedRoleChange] = await attempt(

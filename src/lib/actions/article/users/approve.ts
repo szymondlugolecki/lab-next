@@ -30,7 +30,9 @@ export default async function approve(data: z.infer<UserRoleApproveSchema>) {
     throw new Error("Unauthorized");
   }
 
-  if (isModerator(session.user.role)) {
+  console.log("approve", session.user.role, isModerator(session.user.role));
+
+  if (!isModerator(session.user.role)) {
     throw new Error("Insufficient permissions");
   }
 
@@ -77,6 +79,8 @@ export default async function approve(data: z.infer<UserRoleApproveSchema>) {
       error: "Error while approving a user",
     };
   }
+
+  revalidatePath("/admin/users");
 
   return {
     success: true,

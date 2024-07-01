@@ -105,6 +105,8 @@ export const columns: ColumnDef<AdminTableUser>[] = [
             <DropdownMenuLabel>
               {table.options.meta?.t("Table.users.menu_actions")}
             </DropdownMenuLabel>
+
+            {/* Copy Id */}
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(user.id)}
             >
@@ -113,6 +115,7 @@ export const columns: ColumnDef<AdminTableUser>[] = [
 
             <DropdownMenuSeparator />
 
+            {/* Change Role */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 {table.options.meta?.t("Table.users.change_role")}
@@ -144,10 +147,11 @@ export const columns: ColumnDef<AdminTableUser>[] = [
               </DropdownMenuPortal>
             </DropdownMenuSub>
 
+            {/* Approve */}
             <DropdownMenuItem
               className={cn(
-                "text-green-400 hidden",
-                user.role === "awaiting-approval" && "block"
+                "text-green-400 hidden focus:text-green-500 cursor-pointer",
+                user.role === "awaiting-approval" && "flex"
               )}
               asChild
             >
@@ -167,6 +171,7 @@ export const columns: ColumnDef<AdminTableUser>[] = [
 
             <DropdownMenuSeparator />
 
+            {/* View Articles */}
             <DropdownMenuItem className="p-0">
               <Link
                 href={{
@@ -178,6 +183,8 @@ export const columns: ColumnDef<AdminTableUser>[] = [
                 {table.options.meta?.t("Table.users.view_articles")}
               </Link>
             </DropdownMenuItem>
+
+            {/* View Comments */}
             <DropdownMenuItem className="p-0">
               <Link
                 href={{
