@@ -14,15 +14,16 @@ import {
 } from "@/lib/utils";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ArticleEditInfoSchema } from "@/lib/schemas/article";
 
 // https://github.com/szymondlugolecki/lab-articles.git
 
 import { article$ } from "@/lib/schemas";
+import { getPathname, redirect } from "@/lib/i18n/navigation";
+import { getLocale } from "next-intl/server";
 
-export default async function edit(data: z.infer<ArticleEditInfoSchema>) {
+export default async function editInfo(data: z.infer<ArticleEditInfoSchema>) {
   const session = await auth();
   if (!session) {
     throw new Error("Unauthorized");
@@ -34,10 +35,10 @@ export default async function edit(data: z.infer<ArticleEditInfoSchema>) {
     };
   }
 
-  const { id, title, privacy, category, tags } = result.data;
+  const { id, title, privacy, category, tags, variantId } = result.data;
 
   const article = await db.query.articleVariantsTable.findFirst({
-    where: eq(articleVariantsTable.id, id),
+    where: eq(articleVariantsTable.id, variantId),
     columns: {
       articleId: true,
     },
@@ -48,13 +49,15 @@ export default async function edit(data: z.infer<ArticleEditInfoSchema>) {
     };
   }
 
+  const parsedTitle = parseArticleTitle(title);
+
   // Updating article info in the database
   const [, failedDatabaseUpload] = await attempt(
     db.batch([
       db
         .update(articleVariantsTable)
-        .set({ title, parsedTitle: parseArticleTitle(title) })
-        .where(eq(articleVariantsTable.id, id)),
+        .set({ title, parsedTitle })
+        .where(eq(articleVariantsTable.id, variantId)),
       db
         .update(articlesTable)
         .set({ privacy, category, tags })
@@ -73,7 +76,18 @@ export default async function edit(data: z.infer<ArticleEditInfoSchema>) {
   }
   console.log(7);
 
+  // Revalidating the article page
+  revalidatePath("/article");
+  revalidatePath("/admin/articles");
+
   return {
     success: true,
   };
+
+  // redirect({
+  //   pathname: "/article/[title]",
+  //   params: {
+  //     title: parsedTitle,
+  //   },
+  // });
 }

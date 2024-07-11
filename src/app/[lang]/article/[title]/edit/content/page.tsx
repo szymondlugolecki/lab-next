@@ -103,7 +103,7 @@ export default async function Page({
                 <Button variant="ghost" size="icon" asChild>
                   <Link
                     href={{
-                      pathname: "/article/[title]/edit",
+                      pathname: "/article/[title]/edit/content",
                       params: { title: params.title },
                     }}
                   >

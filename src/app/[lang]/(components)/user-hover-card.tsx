@@ -32,7 +32,7 @@ export function UserHoverCard({ user }: { user: UserHoverCard }) {
 
   return (
     <HoverCard>
-      <HoverCardTrigger asChild>
+      <HoverCardTrigger asChild className="text-inherit">
         <Button variant="link">{user.name}</Button>
       </HoverCardTrigger>
       <HoverCardContent className="w-80">

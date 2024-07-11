@@ -28,44 +28,66 @@ import {
 } from "@/components/ui/sheet";
 
 import { Input } from "@/components/ui/input";
-import { useParams } from "next/navigation";
-import { Locale } from "@/lib/constants";
+import { redirect, useParams } from "next/navigation";
+import { Language, Locale } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
 import { ArticleEditInfoSchema } from "@/lib/schemas/article";
-import edit from "@/lib/actions/article/editInfo";
+import editInfo from "@/lib/actions/article/editInfo";
 import { CategoryCombobox } from "@/components/form/category-combobox";
 import { Asterisk } from "@/components/asterisk";
 import { SelectUser } from "@/lib/db/tables/user";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
-import { articleVariantsTable } from "@/lib/db/tables/article";
-import { EditInfoArticle } from "./edit-article-sheet";
+import {
+  SelectArticle,
+  SelectArticleVariant,
+  articleVariantsTable,
+} from "@/lib/db/tables/article";
+import { getTranslations } from "next-intl/server";
 
-export function EditArticleForm({
+export type EditInfoArticle = Pick<
+  SelectArticle,
+  "privacy" | "category" | "tags"
+> &
+  Pick<
+    SelectArticleVariant,
+    "id" | "language" | "title" | "parsedTitle" | "createdAt"
+  >;
+
+export function EditArticleInfoForm({
+  articleData,
   lang,
-  defaultValues,
+  redirectTo,
 }: {
+  articleData: z.infer<ArticleEditInfoSchema>;
   lang: Locale;
-  defaultValues: z.infer<ArticleEditInfoSchema>;
+  redirectTo?: string;
 }) {
-  const { toast } = useToast();
   const t = useTranslations("Article");
+  const { toast } = useToast();
 
   // 1. Define your form.
   const form = useForm<z.infer<ArticleEditInfoSchema>>({
     resolver: zodResolver(article$.edit(lang).info),
     mode: "onChange",
-    defaultValues,
+    defaultValues: articleData,
   });
 
   const onSubmit = async (data: z.infer<ArticleEditInfoSchema>) => {
-    const response = await edit(data);
+    // Fix the title in the URL after it changed
+    // Redirect or sth
+    console.log("data", { ...articleData, ...data });
+    const response = await editInfo({ ...articleData, ...data });
+    console.log("response", response);
     if (response?.success) {
       toast({
         title: "Success",
         description: "Edited article info!",
       });
+      // if (redirectTo) {
+      //   redirect(redirectTo);
+      // }
       // form.reset();
     } else {
       const { error } = response;
@@ -82,21 +104,6 @@ export function EditArticleForm({
       });
     }
   };
-
-  //   <div className="grid gap-4 py-4">
-  //     <div className="grid grid-cols-4 items-center gap-4">
-  //       <Label htmlFor="name" className="text-right">
-  //         Name
-  //       </Label>
-  //       <Input id="name" value="Pedro Duarte" className="col-span-3" />
-  //     </div>
-  //     <div className="grid grid-cols-4 items-center gap-4">
-  //       <Label htmlFor="username" className="text-right">
-  //         Username
-  //       </Label>
-  //       <Input id="username" value="@peduarte" className="col-span-3" />
-  //     </div>
-  //   </div>
 
   return (
     <Form {...form}>
@@ -137,17 +144,23 @@ export function EditArticleForm({
           )}
         />
 
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit" disabled={form.formState.isSubmitting}>
-              {t("info.save_changes")}
-            </Button>
-          </SheetClose>
-        </SheetFooter>
+        <div className="flex gap-x-3 justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => form.reset()}
+            disabled={form.formState.isSubmitting}
+          >
+            Reset
+          </Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>
+            {t("info.save_changes")}
+          </Button>
+        </div>
 
         {/* <Button type="submit"  disabled={form.formState.isSubmitting}>
-        {t("info.save_changes")}
-        </Button> */}
+                {t("info.save_changes")}
+                </Button> */}
       </form>
     </Form>
   );

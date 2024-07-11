@@ -31,7 +31,7 @@ import { Language, Locale } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
 import { ArticleEditInfoSchema } from "@/lib/schemas/article";
-import edit from "@/lib/actions/article/edit";
+import edit from "@/lib/actions/article/editInfo";
 import { CategoryCombobox } from "@/components/form/category-combobox";
 import { Asterisk } from "@/components/asterisk";
 import { SelectUser } from "@/lib/db/tables/user";

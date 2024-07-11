@@ -110,6 +110,8 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
               <DropdownMenuLabel>
                 {table.options.meta?.t("Table.articles.menu_actions")}
               </DropdownMenuLabel>
+
+              {/* Copy Article Id */}
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(article.id)}
               >
@@ -132,22 +134,37 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
               <DropdownMenuSeparator />
 
               {/* Edit Article Info */}
-              <EditArticleSheet
+              {/* <EditArticleSheet
                 articleData={article}
                 lang={table.options.meta?.lang as Language}
               >
-                {/* <DropdownMenuItem className="p-0"> */}
+                <DropdownMenuItem className="p-0">
                 <button className="w-full px-2 py-1.5 hover:bg-muted relative flex select-none items-center rounded-sm text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground">
                   {table.options.meta?.t("Table.articles.edit_article_info")}
                 </button>
-                {/* </DropdownMenuItem> */}
-              </EditArticleSheet>
+                </DropdownMenuItem>
+              </EditArticleSheet> */}
+
+              <DropdownMenuItem className="p-0">
+                <Link
+                  href={{
+                    pathname: "/article/[title]/edit/info",
+                    params: { title: article.parsedTitle },
+                    query: {
+                      redirectTo: "/admin/articles",
+                    },
+                  }}
+                  className="w-full px-2 py-1.5"
+                >
+                  {table.options.meta?.t("Table.articles.edit_article_info")}
+                </Link>
+              </DropdownMenuItem>
 
               {/* Edit Article Content */}
               <DropdownMenuItem className="p-0">
                 <Link
                   href={{
-                    pathname: "/article/[title]/edit",
+                    pathname: "/article/[title]/edit/content",
                     params: { title: article.parsedTitle },
                   }}
                   className="w-full px-2 py-1.5"
@@ -164,7 +181,8 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
   {
     id: "language",
     accessorKey: "language",
-    size: 30,
+    size: 16,
+    minSize: 16,
     header: () => null,
     cell: ({ getValue }) => {
       const lang = getValue<Language>();
@@ -175,7 +193,11 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
       if (!country) return null;
 
       return (
-        <ReactCountryFlag countryCode={country.value} svg className="mr-1.5" />
+        <ReactCountryFlag
+          countryCode={country.value}
+          svg
+          className="mr-1.5 min-w-4"
+        />
       );
     },
     enableSorting: false,

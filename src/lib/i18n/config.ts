@@ -40,9 +40,13 @@ export const pathnames = {
     en: "/article/[title]",
     pl: "/artykul/[title]",
   },
-  "/article/[title]/edit": {
-    en: "/article/[title]/edit",
-    pl: "/artykul/[title]/edytuj",
+  "/article/[title]/edit/info": {
+    en: "/article/[title]/edit/info",
+    pl: "/artykul/[title]/edytuj/info",
+  },
+  "/article/[title]/edit/content": {
+    en: "/article/[title]/edit/content",
+    pl: "/artykul/[title]/edytuj/tresc",
   },
   "/privacy": {
     en: "/privacy",
