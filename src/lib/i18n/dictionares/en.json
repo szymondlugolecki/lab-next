@@ -34,22 +34,26 @@
     "user_joined": "Joined {date, date, medium}"
   },
   "Article": {
+    "view_article": "View article",
+    "edit_article_settings": "Settings",
     "title": "Title",
     "public": "Public",
-    "public_description": "Public - everyone",
+    "public_full": "Public - everyone",
     "restricted": "Restricted",
-    "restricted_description": "Restricted - only logged in users",
+    "restricted_full": "Restricted - only logged in users",
     "private": "Private",
-    "private_with_description": "Private - mods only",
+    "private_full": "Private - mods only",
     "privacy": "Privacy settings",
     "tags": "Tags",
     "category": "Category",
 
     "content": {
-      "create_article": "Create Article",
-      "edit_article": "Edit Article"
+      "create_article_button": "Create Article",
+      "edit_article_button": "Edit Article"
     },
-    "info": {
+    "settings": {
+      "edit_sheet_title": "Edit article settings",
+      "edit_sheet_description": "Make changes to the article here. Click save when you're done.",
       "title_placeholder": "Variety of compounds in Orange Juice",
       "title_hints": "The title should be short and concise",
       "category_hints": "Select the category that best describes this article",
@@ -89,12 +93,8 @@
       "privacy": "Privacy",
       "created_at": "Created",
       "menu_actions": "Actions",
-      "edit_info": "Edit info",
       "delete": "Delete",
-      "search_articles": "Search articles...",
-      "view_article": "View article",
-      "edit_article_info": "Edit info",
-      "edit_article_content": "Edit content"
+      "search_articles": "Search articles..."
     }
   },
   "Categories": {

@@ -16,7 +16,7 @@ import {
   articleVariantsTable,
 } from "@/lib/db/tables/article";
 import { getTranslations } from "next-intl/server";
-import { EditArticleInfoForm } from "./(components)/edit-article-info-form";
+import { EditArticleInfoForm } from "../(components)/edit-article-settings-form";
 
 const fetchArticleData = async (variantId: SelectUser["id"]) => {
   const result = await db.query.articleVariantsTable.findFirst({
@@ -100,17 +100,13 @@ export default async function EditArticleInfoPage({
     <div className="p-6">
       <div className="max-w-md">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Edit article info
+          Edit article settings
         </h1>
         <p className="leading-7 [&:not(:first-child)]:mt-6">
           Make changes to the article here.
         </p>
         <div className="grid gap-4 py-4">
-          <EditArticleInfoForm
-            articleData={articleData}
-            lang={params.lang}
-            redirectTo={redirectTo}
-          />
+          <EditArticleInfoForm articleData={articleData} lang={params.lang} />
         </div>
       </div>
     </div>

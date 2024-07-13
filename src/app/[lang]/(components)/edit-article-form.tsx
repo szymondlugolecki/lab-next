@@ -54,7 +54,7 @@ export function EditArticleForm({
 
   // 1. Define your form.
   const form = useForm<z.infer<ArticleEditInfoSchema>>({
-    resolver: zodResolver(article$.edit(lang).info),
+    resolver: zodResolver(article$.edit(lang).settings),
     mode: "onChange",
     defaultValues,
   });
@@ -64,7 +64,7 @@ export function EditArticleForm({
     if (response?.success) {
       toast({
         title: "Success",
-        description: "Edited article info!",
+        description: "Edited article settings!",
       });
       // form.reset();
     } else {
@@ -117,7 +117,7 @@ export function EditArticleForm({
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormDescription>{t("info.title_hints")}</FormDescription>
+              <FormDescription>{t("settings.title_hints")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -140,13 +140,13 @@ export function EditArticleForm({
         <SheetFooter>
           <SheetClose asChild>
             <Button type="submit" disabled={form.formState.isSubmitting}>
-              {t("info.save_changes")}
+              {t("settings.save_changes")}
             </Button>
           </SheetClose>
         </SheetFooter>
 
         {/* <Button type="submit"  disabled={form.formState.isSubmitting}>
-        {t("info.save_changes")}
+        {t("settings.save_changes")}
         </Button> */}
       </form>
     </Form>

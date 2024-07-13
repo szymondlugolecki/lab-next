@@ -46,8 +46,8 @@ import {
 import Image from "next/image";
 import { cn, getURLFriendlyEmail } from "@/lib/utils";
 import { Link } from "@/lib/i18n/navigation";
-import changeRole from "@/lib/actions/article/users/changeRole";
-import approve from "@/lib/actions/article/users/approve";
+import changeRole from "@/lib/actions/article/users/role/change";
+import approve from "@/lib/actions/article/users/role/approve";
 
 // type ColumnDefWithI18n = ColumnDef<AdminTableUser> & {
 //     options: {

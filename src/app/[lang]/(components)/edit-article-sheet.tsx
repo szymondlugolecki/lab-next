@@ -111,7 +111,7 @@ export function EditArticleSheet({
 
       <SheetContent side="top" className="h-full">
         <SheetHeader>
-          <SheetTitle>Edit article info</SheetTitle>
+          <SheetTitle>Edit article settings</SheetTitle>
           <SheetDescription>Make changes to your profile here</SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">

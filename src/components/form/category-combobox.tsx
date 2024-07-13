@@ -81,7 +81,7 @@ export function CategoryCombobox({
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    "w-[300px] justify-between",
+                    "w-full justify-between",
                     !field.value && "text-muted-foreground"
                   )}
                 >
@@ -90,14 +90,16 @@ export function CategoryCombobox({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="w-full p-0">
               <Command>
                 <CommandInput
-                  placeholder={t("info.search_category")}
+                  placeholder={t("settings.search_category")}
                   className="h-9"
                 />
                 <CommandList>
-                  <CommandEmpty>{t("info.category_not_found")}</CommandEmpty>
+                  <CommandEmpty>
+                    {t("settings.category_not_found")}
+                  </CommandEmpty>
                   <CommandGroup>
                     {categories.map((category) => (
                       <CommandItem
@@ -124,7 +126,7 @@ export function CategoryCombobox({
               </Command>
             </PopoverContent>
           </Popover>
-          <FormDescription>{t("info.category_hints")}</FormDescription>
+          <FormDescription>{t("settings.category_hints")}</FormDescription>
           <FormMessage />
         </FormItem>
       )}

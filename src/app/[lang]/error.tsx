@@ -8,8 +8,9 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   return (
-    <div>
+    <div className="prose prose-invert">
       <h2>Something went wrong!</h2>
+      <p>Error: {error.message}</p>
     </div>
   );
 }

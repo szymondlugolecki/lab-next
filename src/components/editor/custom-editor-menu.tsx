@@ -1,6 +1,6 @@
 import { JSONContent, useCurrentEditor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
-import editContent from "@/lib/actions/article/editContent";
+import editArticleContent from "@/lib/actions/article/edit/content";
 import { useParams } from "next/navigation";
 import { Locale } from "@/lib/constants";
 import { ArticleEditContentSchema } from "@/lib/schemas/article";
@@ -39,7 +39,7 @@ export function CustomEditorMenu({
 
   const onSubmit = handleSubmit(async (data) => {
     console.log("on submit");
-    const response = await editContent({
+    const response = await editArticleContent({
       content: JSON.stringify(contentJSON),
       locale: lang,
       id,
@@ -68,7 +68,7 @@ export function CustomEditorMenu({
       className="bg-popover rounded-md z-10 p-3 flex justify-end"
     >
       <Button type="submit" disabled={pending || isSubmitting || !hasChanged}>
-        {isSubmitting ? <Spinner /> : t("Article.content.edit_article")}
+        {isSubmitting ? <Spinner /> : t("Article.content.edit_article_button")}
       </Button>
     </form>
   );

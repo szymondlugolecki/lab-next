@@ -92,12 +92,12 @@ export function CreateArticleForm() {
               <FormLabel className="select-none">{t("title")}</FormLabel>
               <FormControl>
                 <input
-                  placeholder={t("info.title_placeholder")}
+                  placeholder={t("settings.title_placeholder")}
                   className="flex h-14 w-full rounded-none text-2xl font-semibold border-0 focus:border-b border-input bg-transparent ring-0 outline-none py-1 shadow-sm transition-all placeholder:text-muted-foreground"
                   {...field}
                 />
               </FormControl>
-              <FormDescription>{t("info.title_hints")}</FormDescription>
+              <FormDescription>{t("settings.title_hints")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -120,7 +120,7 @@ export function CreateArticleForm() {
             form.formState.isSubmitting || form.formState.isSubmitSuccessful
           }
         >
-          {t("content.create_article")}
+          {t("content.create_article_button")}
         </Button>
       </form>
     </Form>

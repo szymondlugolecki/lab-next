@@ -33,7 +33,7 @@ import { Language, Locale } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
 import { ArticleEditInfoSchema } from "@/lib/schemas/article";
-import editInfo from "@/lib/actions/article/editInfo";
+import editArticleSettings from "@/lib/actions/article/edit/settings";
 import { CategoryCombobox } from "@/components/form/category-combobox";
 import { Asterisk } from "@/components/asterisk";
 import { SelectUser } from "@/lib/db/tables/user";
@@ -58,51 +58,44 @@ export type EditInfoArticle = Pick<
 export function EditArticleInfoForm({
   articleData,
   lang,
-  redirectTo,
 }: {
   articleData: z.infer<ArticleEditInfoSchema>;
   lang: Locale;
-  redirectTo?: string;
 }) {
   const t = useTranslations("Article");
   const { toast } = useToast();
 
   // 1. Define your form.
   const form = useForm<z.infer<ArticleEditInfoSchema>>({
-    resolver: zodResolver(article$.edit(lang).info),
+    resolver: zodResolver(article$.edit(lang).settings),
     mode: "onChange",
     defaultValues: articleData,
   });
 
   const onSubmit = async (data: z.infer<ArticleEditInfoSchema>) => {
-    // Fix the title in the URL after it changed
-    // Redirect or sth
     console.log("data", { ...articleData, ...data });
-    const response = await editInfo({ ...articleData, ...data });
+    const response = await editArticleSettings({ ...articleData, ...data });
     console.log("response", response);
-    if (response?.success) {
-      toast({
-        title: "Success",
-        description: "Edited article info!",
-      });
-      // if (redirectTo) {
-      //   redirect(redirectTo);
-      // }
-      // form.reset();
-    } else {
-      const { error } = response;
-      console.log("error", error);
-      const parsedError = error
-        ? typeof error === "string"
-          ? error
-          : error.title
-        : "Unexpected error";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: parsedError,
-      });
-    }
+    // if (response?.success) {
+    //   toast({
+    //     title: "Success",
+    //     description: "Edited article settings!",
+    //   });
+    //   // form.reset();
+    // } else {
+    //   const { error } = response;
+    //   console.log("error", error);
+    //   const parsedError = error
+    //     ? typeof error === "string"
+    //       ? error
+    //       : error.title
+    //     : "Unexpected error";
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Error",
+    //     description: parsedError,
+    //   });
+    // }
   };
 
   return (
@@ -124,7 +117,7 @@ export function EditArticleInfoForm({
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormDescription>{t("info.title_hints")}</FormDescription>
+              <FormDescription>{t("settings.title_hints")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -154,13 +147,9 @@ export function EditArticleInfoForm({
             Reset
           </Button>
           <Button type="submit" disabled={form.formState.isSubmitting}>
-            {t("info.save_changes")}
+            {t("settings.save_changes")}
           </Button>
         </div>
-
-        {/* <Button type="submit"  disabled={form.formState.isSubmitting}>
-                {t("info.save_changes")}
-                </Button> */}
       </form>
     </Form>
   );

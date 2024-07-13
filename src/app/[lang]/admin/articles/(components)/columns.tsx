@@ -148,30 +148,32 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
               <DropdownMenuItem className="p-0">
                 <Link
                   href={{
-                    pathname: "/article/[title]/edit/info",
+                    pathname: "/article/[title]/edit",
                     params: { title: article.parsedTitle },
-                    query: {
-                      redirectTo: "/admin/articles",
-                    },
+                    // query: {
+                    //   redirectTo: "/admin/articles",
+                    // },
                   }}
                   className="w-full px-2 py-1.5"
                 >
-                  {table.options.meta?.t("Table.articles.edit_article_info")}
+                  {table.options.meta?.t(
+                    "Table.articles.edit_article_settings"
+                  )}
                 </Link>
               </DropdownMenuItem>
 
               {/* Edit Article Content */}
-              <DropdownMenuItem className="p-0">
+              {/* <DropdownMenuItem className="p-0">
                 <Link
                   href={{
-                    pathname: "/article/[title]/edit/content",
+                    pathname: "/article/[title]/edit",
                     params: { title: article.parsedTitle },
                   }}
                   className="w-full px-2 py-1.5"
                 >
                   {table.options.meta?.t("Table.articles.edit_article_content")}
                 </Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </Sheet>

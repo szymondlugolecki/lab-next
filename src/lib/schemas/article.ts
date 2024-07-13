@@ -17,7 +17,7 @@ export const create = (language: Language = "en") =>
   });
 
 export const edit = (language: Language = "en") => ({
-  info: z.object({
+  settings: z.object({
     id: z.string({
       invalid_type_error: "Invalid article id",
       required_error: "Article id is required",
@@ -68,5 +68,5 @@ export const edit = (language: Language = "en") => ({
 });
 
 export type ArticleCreateSchema = ReturnType<typeof create>;
-export type ArticleEditInfoSchema = ReturnType<typeof edit>["info"];
+export type ArticleEditInfoSchema = ReturnType<typeof edit>["settings"];
 export type ArticleEditContentSchema = ReturnType<typeof edit>["content"];

@@ -23,12 +23,14 @@ import { article$ } from "@/lib/schemas";
 import { getPathname, redirect } from "@/lib/i18n/navigation";
 import { getLocale } from "next-intl/server";
 
-export default async function editInfo(data: z.infer<ArticleEditInfoSchema>) {
+export default async function editSettings(
+  data: z.infer<ArticleEditInfoSchema>
+) {
   const session = await auth();
   if (!session) {
     throw new Error("Unauthorized");
   }
-  const result = article$.edit().info.safeParse(data);
+  const result = article$.edit().settings.safeParse(data);
   if (!result.success) {
     return {
       error: result.error.flatten().fieldErrors,
@@ -51,7 +53,7 @@ export default async function editInfo(data: z.infer<ArticleEditInfoSchema>) {
 
   const parsedTitle = parseArticleTitle(title);
 
-  // Updating article info in the database
+  // Updating article settings in the database
   const [, failedDatabaseUpload] = await attempt(
     db.batch([
       db
@@ -67,11 +69,11 @@ export default async function editInfo(data: z.infer<ArticleEditInfoSchema>) {
   console.log(6);
   if (failedDatabaseUpload) {
     console.error(
-      "Error while updating article info in the database",
+      "Error while updating article settings in the database",
       failedDatabaseUpload
     );
     return {
-      error: "Error while updating info in the database",
+      error: "Error while updating settings in the database",
     };
   }
   console.log(7);
@@ -80,14 +82,24 @@ export default async function editInfo(data: z.infer<ArticleEditInfoSchema>) {
   revalidatePath("/article");
   revalidatePath("/admin/articles");
 
-  return {
-    success: true,
-  };
+  // Updating article settings in the database
 
-  // redirect({
-  //   pathname: "/article/[title]",
-  //   params: {
-  //     title: parsedTitle,
-  //   },
-  // });
+  // return {
+  //   success: true,
+  // };
+
+  // process.env.NEXT_URL +
+
+  console.log("redirecting", {
+    pathname: "localhost:3000" + "/article/[title]",
+    title: parsedTitle,
+  });
+
+  redirect({
+    // @ts-expect-error
+    pathname: process.env.NEXT_URL + "/article/[title]",
+    params: {
+      title: parsedTitle,
+    },
+  });
 }

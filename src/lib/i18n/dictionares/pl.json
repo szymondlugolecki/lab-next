@@ -34,6 +34,8 @@
     "user_joined": "Dołączył(a) {date, date, medium}"
   },
   "Article": {
+    "view_article": "Zobacz artykuł",
+    "edit_article_settings": "Ustawienia",
     "title": "Tytuł",
     "public": "Publiczny",
     "public_description": "Publiczny - każdy",
@@ -46,10 +48,12 @@
     "category": "Kategoria",
 
     "content": {
-      "create_article": "Utwórz Artykuł",
-      "edit_article": "Edytuj Artykuł"
+      "create_article_button": "Utwórz Artykuł",
+      "edit_article_button": "Edytuj Artykuł"
     },
-    "info": {
+    "settings": {
+      "edit_sheet_title": "Edytuj ustawienia artykułu",
+      "edit_sheet_description": "Zmień ustawienia artykułu tutaj. Kliknij Zapisz, gdy skończysz.",
       "title_placeholder": "Różnorodność związków w soku pomarańczowym",
       "title_hints": "Tytuł powinien być krótki i zwięzły",
       "category_hints": "Wybierz kategorię, która najlepiej opisuje ten artykuł",
@@ -89,12 +93,8 @@
       "privacy": "Ustawienia prywatności",
       "created_at": "Utworzono",
       "menu_actions": "Akcje",
-      "edit_info": "Edytuj dane",
       "delete": "Usuń",
-      "search_articles": "Szukaj artykułów...",
-      "view_article": "Zobacz artykuł",
-      "edit_article_info": "Edytuj dane",
-      "edit_article_content": "Edytuj treść"
+      "search_articles": "Szukaj artykułów..."
     }
   },
   "Categories": {
