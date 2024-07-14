@@ -75,7 +75,7 @@ export function EditArticleInfoForm({
   const onSubmit = async (data: z.infer<ArticleEditInfoSchema>) => {
     console.log("data", { ...articleData, ...data });
     const response = await editArticleSettings({ ...articleData, ...data });
-    console.log("response", response);
+    // console.log("response", response);
     // if (response?.success) {
     //   toast({
     //     title: "Success",
@@ -101,7 +101,7 @@ export function EditArticleInfoForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit, console.error)}
+        onSubmit={form.handleSubmit(onSubmit)}
         method="POST"
         className="space-y-8"
       >

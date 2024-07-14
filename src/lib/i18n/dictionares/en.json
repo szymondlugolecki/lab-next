@@ -35,6 +35,7 @@
   },
   "Article": {
     "view_article": "View article",
+    "edit_article": "Edit article",
     "edit_article_settings": "Settings",
     "title": "Title",
     "public": "Public",

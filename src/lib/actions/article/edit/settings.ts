@@ -20,8 +20,10 @@ import { ArticleEditInfoSchema } from "@/lib/schemas/article";
 // https://github.com/szymondlugolecki/lab-articles.git
 
 import { article$ } from "@/lib/schemas";
-import { getPathname, redirect } from "@/lib/i18n/navigation";
+import { getPathname } from "@/lib/i18n/navigation";
 import { getLocale } from "next-intl/server";
+import { headers } from "next/headers";
+import { notFound, redirect, RedirectType } from "next/navigation";
 
 export default async function editSettings(
   data: z.infer<ArticleEditInfoSchema>
@@ -37,15 +39,15 @@ export default async function editSettings(
     };
   }
 
-  const { id, title, privacy, category, tags, variantId } = result.data;
+  const { title, privacy, category, tags, variantId } = result.data;
 
-  const article = await db.query.articleVariantsTable.findFirst({
+  const articleVariant = await db.query.articleVariantsTable.findFirst({
     where: eq(articleVariantsTable.id, variantId),
     columns: {
       articleId: true,
     },
   });
-  if (!article) {
+  if (!articleVariant) {
     return {
       error: "Article not found",
     };
@@ -54,7 +56,7 @@ export default async function editSettings(
   const parsedTitle = parseArticleTitle(title);
 
   // Updating article settings in the database
-  const [, failedDatabaseUpload] = await attempt(
+  const [, dbUpdateError] = await attempt(
     db.batch([
       db
         .update(articleVariantsTable)
@@ -63,43 +65,57 @@ export default async function editSettings(
       db
         .update(articlesTable)
         .set({ privacy, category, tags })
-        .where(eq(articlesTable.id, article.articleId)),
+        .where(eq(articlesTable.id, articleVariant.articleId)),
     ])
   );
-  console.log(6);
-  if (failedDatabaseUpload) {
+
+  if (dbUpdateError) {
     console.error(
       "Error while updating article settings in the database",
-      failedDatabaseUpload
+      dbUpdateError
     );
     return {
       error: "Error while updating settings in the database",
     };
   }
-  console.log(7);
 
   // Revalidating the article page
-  revalidatePath("/article");
+  revalidatePath("/article/[title]", "layout");
   revalidatePath("/admin/articles");
-
-  // Updating article settings in the database
 
   // return {
   //   success: true,
   // };
 
-  // process.env.NEXT_URL +
+  // Testing
+  // This still doesn't work properly
+  // The redirection is not working because it is caught in a try/catch block
+  // In the handleSubmit function
 
   console.log("redirecting", {
     pathname: "localhost:3000" + "/article/[title]",
     title: parsedTitle,
   });
 
-  redirect({
-    // @ts-expect-error
-    pathname: process.env.NEXT_URL + "/article/[title]",
-    params: {
-      title: parsedTitle,
+  const forwardedHost = headers().get("X-Forwarded-Host");
+  const locale = (await getLocale()) as Locale;
+  const pathname = getPathname({
+    href: {
+      pathname: "/article/[title]/edit",
+      params: { title: parsedTitle },
     },
+    locale,
   });
+  console.log("forwardedHost", forwardedHost);
+  console.log("getLocale", locale);
+  console.log("pathname", pathname);
+
+  if (!forwardedHost) {
+    notFound();
+  }
+
+  const fullUrl = forwardedHost + "/" + locale + pathname;
+  console.log("full url", fullUrl);
+
+  redirect(fullUrl, RedirectType.push);
 }

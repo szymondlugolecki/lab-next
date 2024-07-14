@@ -35,6 +35,7 @@
   },
   "Article": {
     "view_article": "Zobacz artykuł",
+    "edit_article": "Edytuj artykuł",
     "edit_article_settings": "Ustawienia",
     "title": "Tytuł",
     "public": "Publiczny",

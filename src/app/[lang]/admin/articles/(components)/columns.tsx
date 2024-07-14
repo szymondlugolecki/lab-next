@@ -127,7 +127,7 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
                   }}
                   className="w-full px-2 py-1.5"
                 >
-                  {table.options.meta?.t("Table.articles.view_article")}
+                  {table.options.meta?.t("Article.view_article")}
                 </Link>
               </DropdownMenuItem>
 
@@ -156,9 +156,7 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
                   }}
                   className="w-full px-2 py-1.5"
                 >
-                  {table.options.meta?.t(
-                    "Table.articles.edit_article_settings"
-                  )}
+                  {table.options.meta?.t("Article.edit_article")}
                 </Link>
               </DropdownMenuItem>
 
