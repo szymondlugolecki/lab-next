@@ -22,25 +22,18 @@ CREATE TABLE `allowed_access` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `article_variant` (
+CREATE TABLE `article` (
 	`id` text PRIMARY KEY NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`title` text NOT NULL,
 	`parsed_title` text NOT NULL,
 	`language` text NOT NULL,
-	`search_content` text DEFAULT '' NOT NULL,
-	`article_id` text NOT NULL,
-	`author_id` text NOT NULL,
-	FOREIGN KEY (`article_id`) REFERENCES `article`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`author_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
-);
---> statement-breakpoint
-CREATE TABLE `article` (
-	`id` text PRIMARY KEY NOT NULL,
-	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`category` text DEFAULT 'other' NOT NULL,
 	`tags` text DEFAULT '[]' NOT NULL,
-	`privacy` text DEFAULT 'private' NOT NULL
+	`privacy` text DEFAULT 'private' NOT NULL,
+	`search_content` text DEFAULT '' NOT NULL,
+	`author_id` text NOT NULL,
+	FOREIGN KEY (`author_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `blocked_access` (
@@ -91,6 +84,4 @@ CREATE TABLE `user` (
 	`image` text NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `parsed_titlex` ON `article_variant` (`parsed_title`);--> statement-breakpoint
-CREATE INDEX `search_contentx` ON `article_variant` (`search_content`);--> statement-breakpoint
 CREATE UNIQUE INDEX `authenticator_credential_id_unique` ON `authenticator` (`credential_id`);

@@ -40,43 +40,24 @@ export const articlesTable = sqliteTable("article", {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),
 
+  title: text("title").notNull(),
+  parsedTitle: text("parsed_title").notNull(),
+
+  language: text("language", { enum: languages }).notNull(),
+
   category: text("category", { enum: categories }).notNull().default("other"),
   tags: text("tags", { mode: "json" }).$type<Tag[]>().notNull().default([]),
 
   // "private" | "public" | "restricted"
   privacy: text("privacy", { enum: PRIVACY }).notNull().default("private"),
+
+  // parsed content optimized for search
+  searchContent: text("search_content").notNull().default(""),
+
+  authorId: text("author_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
 });
-
-export const articleVariantsTable = sqliteTable(
-  "article_variant",
-  {
-    id: text("id").primaryKey(),
-    createdAt: integer("created_at", { mode: "timestamp_ms" })
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-
-    title: text("title").notNull(),
-    parsedTitle: text("parsed_title").notNull(),
-
-    language: text("language", { enum: languages }).notNull(),
-
-    // parsed content optimized for search
-    searchContent: text("search_content").notNull().default(""),
-
-    articleId: text("article_id")
-      .notNull()
-      .references(() => articlesTable.id),
-    authorId: text("author_id")
-      .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
-  },
-  (table) => {
-    return {
-      parsedTitlex: uniqueIndex("parsed_titlex").on(table.parsedTitle),
-      searchContent: index("search_contentx").on(table.searchContent),
-    };
-  }
-);
 
 // Junction table for allowed access
 export const allowedAccessTable = sqliteTable(
@@ -111,33 +92,20 @@ export const blockedAccessTable = sqliteTable(
 );
 
 // Relations for articlesTable
-export const articlesRelations = relations(articlesTable, ({ many }) => ({
-  variants: many(articleVariantsTable, { relationName: "variants" }),
+export const articlesRelations = relations(articlesTable, ({ one, many }) => ({
   allowedUsers: many(allowedAccessTable, {
     relationName: "allowed_access_article",
   }),
   blockedUsers: many(blockedAccessTable, {
     relationName: "blocked_access_article",
   }),
+  comments: many(commentsTable, { relationName: "comments" }),
+  author: one(usersTable, {
+    fields: [articlesTable.authorId],
+    references: [usersTable.id],
+    relationName: "author",
+  }),
 }));
-
-// Relations for articleVariantsTable
-export const articleVariantsRelations = relations(
-  articleVariantsTable,
-  ({ one, many }) => ({
-    author: one(usersTable, {
-      fields: [articleVariantsTable.authorId],
-      references: [usersTable.id],
-      relationName: "author",
-    }),
-    comments: many(commentsTable, { relationName: "comments" }),
-    article: one(articlesTable, {
-      fields: [articleVariantsTable.articleId],
-      references: [articlesTable.id],
-      relationName: "variants",
-    }),
-  })
-);
 
 // Relations for allowedAccessTable
 export const allowedAccessRelations = relations(
@@ -176,17 +144,5 @@ export const blockedAccessRelations = relations(
 export const insertArticleSchema = createInsertSchema(articlesTable);
 export const selectArticleSchema = createSelectSchema(articlesTable);
 
-export const insertArticleVariantSchema =
-  createInsertSchema(articleVariantsTable);
-export const selectArticleVariantSchema =
-  createSelectSchema(articleVariantsTable);
-
 export type SelectArticle = InferSelectModel<typeof articlesTable>;
 export type InsertArticle = InferInsertModel<typeof articlesTable>;
-
-export type SelectArticleVariant = InferSelectModel<
-  typeof articleVariantsTable
->;
-export type InsertArticleVariant = InferInsertModel<
-  typeof articleVariantsTable
->;

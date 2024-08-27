@@ -30,17 +30,20 @@ import {
 // You can use a Zod schema here if you want.
 export type AdminTableArticle = Pick<
   SelectArticle,
-  "id" | "privacy" | "category" | "tags"
-> &
-  Pick<
-    SelectArticleVariant,
-    "language" | "title" | "parsedTitle" | "createdAt"
-  > & { variantId: SelectArticleVariant["id"] } & {
-    author: Pick<
-      SelectUser,
-      "id" | "email" | "image" | "name" | "role" | "createdAt"
-    >;
-  };
+  | "id"
+  | "privacy"
+  | "category"
+  | "tags"
+  | "language"
+  | "title"
+  | "parsedTitle"
+  | "createdAt"
+> & {
+  author: Pick<
+    SelectUser,
+    "id" | "email" | "image" | "name" | "role" | "createdAt"
+  >;
+};
 
 import {
   Tooltip,
@@ -49,17 +52,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "@/lib/i18n/navigation";
-import {
-  SelectArticle,
-  SelectArticleVariant,
-  articleVariantsTable,
-} from "@/lib/db/tables/article";
+import { SelectArticle } from "@/lib/db/tables/article";
 import { SelectUser } from "@/lib/db/tables/user";
 import ReactCountryFlag from "react-country-flag";
 import { UserHoverCard } from "@/app/[lang]/(components)/user-hover-card";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
-import { EditArticleSheet } from "@/app/[lang]/(components)/edit-article-sheet";
 import { useState } from "react";
 import { Sheet } from "@/components/ui/sheet";
 

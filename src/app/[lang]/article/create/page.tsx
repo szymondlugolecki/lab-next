@@ -1,7 +1,5 @@
 import { CreateArticleForm } from "./create-article-form";
 
-export const runtime = "edge";
-
 export default function Page() {
   return (
     <main className="flex-1">

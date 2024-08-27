@@ -43,6 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           role: true,
         },
       });
+      // console.log("session callback", session, result);
       if (!result) {
         return {
           ...session,

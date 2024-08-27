@@ -42,8 +42,8 @@ export const getURLFriendlyEmail = (email: string) => {
   return email.split("@")[0];
 };
 
-export const getArticlePath = (articleVariantId: string, language: Language) =>
-  `articles/${language}/${articleVariantId}.json`;
+export const getArticlePath = (articleId: string) =>
+  `articles/${articleId}.json`;
 
 export const isModerator = (role: Role) => {
   return role === "moderator" || role === "admin";
@@ -98,6 +98,7 @@ export const errorToToast = (error: string | Record<string, string[]>) => {
 };
 
 export const fetchArticleHTML = async (path: string) => {
+  console.log("fetchArticleHTML", "path", path);
   const { data } = await octokit.request(
     "GET /repos/{owner}/{repo}/contents/{path}",
     {

@@ -1,6 +1,5 @@
 import { Language } from "@/lib/constants";
 import { db } from "@/lib/db";
-import { articleVariantsTable } from "@/lib/db/tables/article";
 import { octokit } from "@/lib/server/clients";
 import { and, eq } from "drizzle-orm";
 import { generateHTML } from "@tiptap/html";
@@ -9,36 +8,28 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import sanitizeHtml from "sanitize-html";
-import { getArticlePath } from "@/lib/utils";
+import { attempt, getArticlePath } from "@/lib/utils";
+import { articlesTable } from "@/lib/db/tables/article";
 
-const getArticleContent = async (title: string, language: Language) => {
-  const result = await db.query.articleVariantsTable.findFirst({
-    where: and(
-      eq(articleVariantsTable.parsedTitle, title),
-      eq(articleVariantsTable.language, language)
-    ),
+const getArticleContent = async (title: string) => {
+  const result = await db.query.articlesTable.findFirst({
+    where: eq(articlesTable.parsedTitle, title),
     columns: {
       id: true,
       title: true,
       createdAt: true,
+      privacy: true,
+      category: true,
     },
     with: {
-      article: {
+      allowedUsers: {
         columns: {
-          privacy: true,
-          category: true,
+          userId: true,
         },
-        with: {
-          allowedUsers: {
-            columns: {
-              userId: true,
-            },
-          },
-          blockedUsers: {
-            columns: {
-              userId: true,
-            },
-          },
+      },
+      blockedUsers: {
+        columns: {
+          userId: true,
         },
       },
     },
@@ -49,20 +40,28 @@ const getArticleContent = async (title: string, language: Language) => {
     };
   }
 
-  const response = await octokit.request(
-    "GET /repos/{owner}/{repo}/contents/{path}",
-    {
+  console.log("path", getArticlePath(result.id));
+
+  const [article, fetchArticleError] = await attempt(
+    octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
       owner: process.env.GH_REPO_OWNER!,
       repo: process.env.GH_REPO_NAME!,
-      path: getArticlePath(result.id, language),
+      path: getArticlePath(result.id),
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
       },
-    }
+    })
   );
 
+  if (fetchArticleError) {
+    console.error("Error while fetching article", fetchArticleError);
+    return {
+      error: "Error while fetching article",
+    };
+  }
+
   // @ts-ignore
-  const contentBase64: string = response.data.content;
+  const contentBase64: string = article.data.content;
   const contentStringified = Buffer.from(contentBase64, "base64").toString(
     "utf-8"
   );
@@ -89,8 +88,11 @@ export default async function Article({
   params: { title: string; lang: Language };
 }) {
   console.log("params", params);
-  const { data, error } = await getArticleContent(params.title, params.lang);
+  const { data, error } = await getArticleContent(
+    decodeURIComponent(params.title)
+  );
 
+  console.log("data", data);
   if (!data) {
     return <div>{error}</div>;
   }

@@ -7,10 +7,9 @@ import { ArticleEditContentSchema } from "@/lib/schemas/article";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { article$ } from "@/lib/schemas";
-import { toast } from "../ui/use-toast";
-import { errorToToast } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { Spinner } from "../spinner";
+import { toast } from "sonner";
 
 export function CustomEditorMenu({
   contentJSON,
@@ -38,23 +37,17 @@ export function CustomEditorMenu({
   }
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("on submit");
-    const response = await editArticleContent({
+    const result = await editArticleContent({
       content: JSON.stringify(contentJSON),
-      locale: lang,
       id,
+      language: lang,
     });
-    console.log("response", response);
-    if (response?.error) {
-      const errorMessages = errorToToast(response.error);
-      errorMessages.forEach((error) =>
-        toast({ title: "Error", description: error })
-      );
+    const error = result?.data?.error || result?.serverError;
+    console.log("result", result);
+    if (error) {
+      toast.error(error);
     } else {
-      toast({
-        title: "Success",
-        description: "Article edited!",
-      });
+      toast("Success");
     }
   });
 

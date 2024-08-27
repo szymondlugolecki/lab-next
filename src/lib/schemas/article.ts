@@ -1,4 +1,4 @@
-import { CATEGORIES, LOCALES, PRIVACY, TAGS } from "@/lib/constants";
+import { CATEGORIES, LANGUAGES, LOCALES, PRIVACY, TAGS } from "@/lib/constants";
 import type { Category, Tag, Language } from "@/lib/constants";
 import { z } from "zod";
 
@@ -18,11 +18,11 @@ export const create = (language: Language = "en") =>
 
 export const edit = (language: Language = "en") => ({
   settings: z.object({
+    // id: z.string({
+    //   invalid_type_error: "Invalid article id",
+    //   required_error: "Article id is required",
+    // }),
     id: z.string({
-      invalid_type_error: "Invalid article id",
-      required_error: "Article id is required",
-    }),
-    variantId: z.string({
       invalid_type_error: "Invalid article id",
       required_error: "Article id is required",
     }),
@@ -60,13 +60,17 @@ export const edit = (language: Language = "en") => ({
       invalid_type_error: "Invalid content",
       required_error: "Content is required",
     }),
-    locale: z.enum(LOCALES, {
-      invalid_type_error: "Invalid locale",
-      required_error: "Locale is required",
+    language: z.enum(LANGUAGES as [Language, ...Language[]], {
+      invalid_type_error: "Invalid language",
+      required_error: "Language is required",
     }),
   }),
 });
 
-export type ArticleCreateSchema = ReturnType<typeof create>;
-export type ArticleEditInfoSchema = ReturnType<typeof edit>["settings"];
-export type ArticleEditContentSchema = ReturnType<typeof edit>["content"];
+export type ArticleCreateSchema = z.infer<ReturnType<typeof create>>;
+export type ArticleEditSettingsSchema = z.infer<
+  ReturnType<typeof edit>["settings"]
+>;
+export type ArticleEditContentSchema = z.infer<
+  ReturnType<typeof edit>["content"]
+>;

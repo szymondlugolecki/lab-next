@@ -1,95 +1,67 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import { LANGUAGES_MAP, LOCALES, Language, Locale } from "@/lib/constants";
 import { db } from "@/lib/db";
-import { articleVariantsTable, articlesTable } from "@/lib/db/tables/article";
+import { articlesTable } from "@/lib/db/tables/article";
 import { octokit } from "@/lib/server/clients";
-import {
-  attempt,
-  extractTextFromJSON,
-  getArticlePath,
-  getLanguageFromLocale,
-} from "@/lib/utils";
-import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { attempt, extractTextFromJSON, getArticlePath } from "@/lib/utils";
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { z } from "zod";
-import { ArticleEditContentSchema } from "@/lib/schemas/article";
-
-// https://github.com/szymondlugolecki/lab-articles.git
 
 import { article$ } from "@/lib/schemas";
+import { moderatorAction } from "@/lib/server/safe-action";
 
-// const date = new Date().toLocaleDateString('pl-PL')
+// This action is used to edit article's content
+// First it changes it on Github
+// Then it the parsed search-optimized text in the database
 
-export default async function editContent(
-  data: z.infer<ArticleEditContentSchema>
-) {
-  console.log(0);
-  const session = await auth();
-  if (!session) {
-    throw new Error("Unauthorized");
-  }
-  const result = article$.edit().content.safeParse(data);
-  console.log(1);
+// Transactions here would be great, but SQLite DOES NOT ALLOW THEM!
+// Instead I'm going with Promise.allSettled() here
+const editArticleContent = moderatorAction
+  .schema(article$.edit().content)
+  .action(async ({ parsedInput }) => {
+    const { id, content, language } = parsedInput;
 
-  if (!result.success) {
-    return {
-      error: result.error.flatten().fieldErrors,
-    };
-  }
-  console.log(2);
-
-  const { id, content, locale } = result.data;
-  const language = getLanguageFromLocale(locale);
-  console.log(3);
-
-  // Update the article on Github
-  const [, failedGithubUpdate] = await attempt(
-    octokit.createOrUpdateTextFile({
+    const githubContentUpdate = octokit.createOrUpdateTextFile({
       owner: process.env.GH_REPO_OWNER,
       repo: process.env.GH_REPO_NAME,
-      path: getArticlePath(id, language),
+      path: getArticlePath(id),
       content,
-      message: `Updated article`,
-    })
-  );
-  console.log(4);
-  if (failedGithubUpdate) {
-    console.error("Error while updating article on Github", failedGithubUpdate);
-    return {
-      error: "Error while updating the article on Github",
-    };
-  }
-  console.log(5);
+      message: `Update`,
+    });
 
-  const searchContentParsed = extractTextFromJSON(JSON.parse(content));
+    // Extracting text optimized for search from JSON
+    const searchContentParsed = extractTextFromJSON(JSON.parse(content));
 
-  // Updating the content in the database
-  const [newDatabaseArticle, failedDatabaseUpload] = await attempt(
-    db
-      .update(articleVariantsTable)
+    const databaseContentUpdate = db
+      .update(articlesTable)
       .set({ searchContent: searchContentParsed })
-      .where(
-        and(
-          eq(articleVariantsTable.id, id),
-          eq(articleVariantsTable.language, language)
-        )
-      )
-      .returning({ parsedTitle: articleVariantsTable.parsedTitle })
-  );
-  console.log(6);
-  if (failedDatabaseUpload) {
-    console.error(
-      "Error while updating article content in the database",
-      failedDatabaseUpload
-    );
-    return {
-      error: "Error while updating content in the database",
-    };
-  }
-  console.log(7);
+      .where(eq(articlesTable.id, id))
+      .returning({ parsedTitle: articlesTable.parsedTitle });
 
-  redirect(`/article/${newDatabaseArticle[0].parsedTitle}`);
-}
+    // Run both promises at once
+    const [githubUpdateResult, databaseUpdateResult] = await Promise.allSettled(
+      [githubContentUpdate, databaseContentUpdate]
+    );
+    if (githubUpdateResult.status === "rejected") {
+      console.error(
+        "Error while updating article content on Github",
+        githubUpdateResult.reason
+      );
+      return {
+        error: "Error while updating article content on Github",
+      };
+    }
+    if (databaseUpdateResult.status === "rejected") {
+      console.error(
+        "Error while updating article content in the database",
+        databaseUpdateResult.reason
+      );
+      return {
+        error: "Error while updating article content in the database",
+      };
+    }
+
+    redirect(`/article/${databaseUpdateResult.value[0].parsedTitle}`);
+  });
+
+export default editArticleContent;

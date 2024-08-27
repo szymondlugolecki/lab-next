@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useToast } from "@/components/ui/use-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,21 +18,28 @@ import {
 import createArticle from "@/lib/actions/article/create";
 import { Input } from "@/components/ui/input";
 import { useParams } from "next/navigation";
-import { Language } from "@/lib/constants";
+import { Language, LANGUAGES, LANGUAGES_MAP } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
 import { ArticleCreateSchema } from "@/lib/schemas/article";
 import { redirect } from "next/dist/server/api-utils";
-import { permanentRedirect, useRouter } from "@/lib/i18n/navigation";
+import { Link, permanentRedirect, useRouter } from "@/lib/i18n/navigation";
+import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function CreateArticleForm() {
   const { lang } = useParams<{ lang: Language }>();
-  const { toast } = useToast();
   const t = useTranslations("Article");
   const router = useRouter();
 
   // 1. Define your form.
-  const form = useForm<z.infer<ArticleCreateSchema>>({
+  const form = useForm<ArticleCreateSchema>({
     resolver: zodResolver(article$.create(lang)),
     mode: "onChange",
     defaultValues: {
@@ -42,39 +48,26 @@ export function CreateArticleForm() {
     },
   });
 
-  const onSubmit = async ({
-    title,
-    language,
-  }: z.infer<ArticleCreateSchema>) => {
-    const response = await createArticle({ title, language });
-    if (response?.success) {
+  const onSubmit = async ({ title, language }: ArticleCreateSchema) => {
+    const result = await createArticle({ title, language });
+    const error = result?.data?.error || result?.serverError;
+    console.log("result", result);
+    if (result?.data?.success) {
+      toast("Success");
       router.push({
         pathname: "/article/[title]/edit",
-        params: { title: response.parsedTitle },
+        params: { title: result.data.parsedTitle },
       });
-      // permanentRedirect({
-      //   pathname: "/article/[title]/edit",
-      //   params: { title: response.title },
-      // });
-      toast({
-        title: "Success",
-        description: "Article created!",
-      });
-      // form.reset();
-    } else {
-      const { error } = response;
-      console.log("error", error);
-      const parsedError = error
-        ? typeof error === "string"
-          ? error
-          : error.title
-        : "Unexpected error";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: parsedError,
-      });
+    } else if (error) {
+      toast.error(error);
     }
+
+    // permanentRedirect({
+    //   pathname: "/article/[title]/edit",
+    //   params: { title: response.title },
+    // });
+
+    // form.reset();
   };
 
   return (
@@ -93,6 +86,7 @@ export function CreateArticleForm() {
               <FormControl>
                 <input
                   placeholder={t("settings.title_placeholder")}
+                  spellCheck={false}
                   className="flex h-14 w-full rounded-none text-2xl font-semibold border-0 focus:border-b border-input bg-transparent ring-0 outline-none py-1 shadow-sm transition-all placeholder:text-muted-foreground"
                   {...field}
                 />
@@ -102,18 +96,48 @@ export function CreateArticleForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormControl className="hidden">
+              <FormLabel>{t("language")}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={t("settings.language_placeholder")}
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {LANGUAGES_MAP.map((language, index) => (
+                    <SelectItem key={index} value={language.value}>
+                      {language.key}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>{t("settings.language_hints")}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* <FormField
+          control={form.control}
+          name="language"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
                 <Input {...field} value={lang} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
+
         <Button
           type="submit"
           disabled={

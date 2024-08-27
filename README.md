@@ -1,5 +1,28 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
 
+# ENV
+```env
+# Auth
+AUTH_SECRET=""
+AUTH_GOOGLE_ID=""
+AUTH_GOOGLE_SECRET=""
+
+# Cloudflare
+CLOUDFLARE_ACCOUNT_ID=""
+CLOUDFLARE_DATABASE_ID=""
+CLOUDFLARE_API_TOKEN=""
+
+# Misc
+OWNER_EMAIL=""
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+
+# Github
+GITHUB_ACCESS_TOKEN=""
+GH_REPO_OWNER=""
+GH_REPO_NAME=""
+
+```
+
 ## Getting Started
 
 First, run the development server:

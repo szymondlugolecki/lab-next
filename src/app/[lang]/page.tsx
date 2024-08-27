@@ -4,13 +4,6 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
-// import { Input } from '@/components/ui/input';
-import {
-  useSearchParams,
-  usePathname,
-  useRouter,
-  redirect,
-} from "next/navigation";
 // import Search from './ui/search';
 import { Suspense } from "react";
 import { Input } from "@/components/ui/input";
@@ -55,7 +48,7 @@ const fetchArticles = async () => {
   return [article, article, article];
 };
 
-export default async function Page({
+export default async function HomePage({
   searchParams,
 }: {
   searchParams?: {

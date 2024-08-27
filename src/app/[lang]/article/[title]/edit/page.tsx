@@ -1,15 +1,8 @@
 import Tiptap from "@/components/editor/tip-tap";
 import { Language } from "@/lib/constants";
 import { db } from "@/lib/db";
-import { articleVariantsTable } from "@/lib/db/tables/article";
-import { octokit } from "@/lib/server/clients";
 import { fetchArticleHTML, getArticlePath } from "@/lib/utils";
 import { and, eq } from "drizzle-orm";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Bold from "@tiptap/extension-bold";
-import sanitizeHtml from "sanitize-html";
 import { generateHTML } from "@tiptap/html";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/lib/i18n/navigation";
@@ -18,70 +11,44 @@ import {
   Settings,
   SquareArrowOutUpRight,
 } from "lucide-react";
-import { EditArticleInfoSheet } from "./(components)/edit-article-settings-sheet";
+import { EditArticleInfoDrawer } from "./(components)/edit-article-settings-drawer";
 import { getTranslations } from "next-intl/server";
+import { articlesTable } from "@/lib/db/tables/article";
+import { EditArticleSettingsForm } from "./(components)/edit-article-settings-form";
 
 export const runtime = "edge";
 
-const fetchArticle = async (parsedTitle: string, lang: Language) => {
-  const result = await db.query.articleVariantsTable.findFirst({
-    where: and(
-      eq(articleVariantsTable.parsedTitle, parsedTitle),
-      eq(articleVariantsTable.language, lang)
-    ),
+const fetchArticle = async (parsedTitle: string) => {
+  const result = await db.query.articlesTable.findFirst({
+    where: eq(articlesTable.parsedTitle, parsedTitle),
     columns: {
       id: true,
       language: true,
       title: true,
-    },
-    with: {
-      article: {
-        columns: {
-          id: true,
-          privacy: true,
-          category: true,
-          tags: true,
-        },
-      },
+      privacy: true,
+      category: true,
+      tags: true,
     },
   });
 
   if (!result) {
     return null;
   }
-
-  const variantData = {
-    variantId: result.id,
-    language: result.language,
-    title: result.title,
-  };
-
-  const articleData = {
-    id: result.article.id,
-    privacy: result.article.privacy,
-    category: result.article.category,
-    tags: result.article.tags,
-  };
-
-  return {
-    ...variantData,
-    ...articleData,
-  };
+  return result;
 };
 
-export default async function Page({
+export default async function EditArticlePage({
   params,
 }: {
   params: { lang: Language; title: string };
 }) {
   const t = await getTranslations("Article");
-  const articleData = await fetchArticle(params.title, params.lang);
+  const articleData = await fetchArticle(decodeURIComponent(params.title));
   if (!articleData) {
     throw new Error("Article not found");
   }
-  const articleContent = await fetchArticleHTML(
-    getArticlePath(articleData.variantId, articleData.language)
-  );
+  console.log("articleData", articleData);
+  const articleContent = await fetchArticleHTML(getArticlePath(articleData.id));
 
   return (
     <main className="flex-1">
@@ -109,19 +76,12 @@ export default async function Page({
               </Button>
 
               {/* Edit Article Settings Button */}
-              <EditArticleInfoSheet
-                articleData={articleData}
-                lang={params.lang}
-              >
-                <Button
-                  variant="ghost"
-                  className="flex items-center gap-x-1.5"
-                  size="sm"
-                >
-                  {t("edit_article_settings")}
-                  <Settings className="size-4" />
-                </Button>
-              </EditArticleInfoSheet>
+              <EditArticleInfoDrawer>
+                <EditArticleSettingsForm
+                  articleData={articleData}
+                  lang={params.lang}
+                />
+              </EditArticleInfoDrawer>
             </div>
 
             <div className="pb-4"></div>

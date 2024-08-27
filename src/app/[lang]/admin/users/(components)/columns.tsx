@@ -17,25 +17,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Language, ROLES, Role } from "@/lib/constants";
+import { ROLES, type Role } from "@/lib/constants";
 import { SelectUser } from "@/lib/db/tables/user";
-
-import { createTranslator, createFormatter } from "next-intl";
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type AdminTableUser = Pick<
-  SelectUser,
-  "id" | "email" | "name" | "role" | "image" | "createdAt"
->;
-
-// export type Article = {
-//   id: string;
-//   title: string;
-//   privacy: Privacy;
-//   author: string;
-//   createdAt: string;
-// };
+import { toast } from "sonner";
 
 import {
   Tooltip,
@@ -48,6 +32,19 @@ import { cn, getURLFriendlyEmail } from "@/lib/utils";
 import { Link } from "@/lib/i18n/navigation";
 import changeRole from "@/lib/actions/article/users/role/change";
 import approve from "@/lib/actions/article/users/role/approve";
+
+export type AdminTableUser = Pick<
+  SelectUser,
+  "id" | "email" | "name" | "role" | "image" | "createdAt"
+>;
+
+// export type Article = {
+//   id: string;
+//   title: string;
+//   privacy: Privacy;
+//   author: string;
+//   createdAt: string;
+// };
 
 // type ColumnDefWithI18n = ColumnDef<AdminTableUser> & {
 //     options: {
@@ -131,12 +128,18 @@ export const columns: ColumnDef<AdminTableUser>[] = [
                         )}
                         disabled={role === user.role}
                         onClick={async () => {
-                          console.log("clicked");
                           const result = await changeRole({
                             id: user.id,
                             role,
                           });
+                          const error =
+                            result?.data?.error || result?.serverError;
                           console.log("result", result);
+                          if (result?.data?.success) {
+                            toast("Sukces");
+                          } else if (error) {
+                            toast.error(error);
+                          }
                         }}
                       >
                         {table.options.meta?.t(`Roles.${role}`)}
@@ -158,11 +161,16 @@ export const columns: ColumnDef<AdminTableUser>[] = [
               <button
                 className="w-full"
                 onClick={async () => {
-                  console.log("clicked");
                   const result = await approve({
                     ids: [user.id],
                   });
+                  const error = result?.data?.error || result?.serverError;
                   console.log("result", result);
+                  if (result?.data?.success) {
+                    toast("Sukces");
+                  } else if (error) {
+                    toast.error(error);
+                  }
                 }}
               >
                 {table.options.meta?.t("Table.users.approve")}
