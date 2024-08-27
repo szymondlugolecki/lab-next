@@ -30,31 +30,13 @@ import {
 import Image from "next/image";
 import { cn, getURLFriendlyEmail } from "@/lib/utils";
 import { Link } from "@/lib/i18n/navigation";
-import changeRole from "@/lib/actions/article/users/role/change";
-import approve from "@/lib/actions/article/users/role/approve";
+import changeRole from "@/lib/actions/users/role/change";
+import approve from "@/lib/actions/users/role/approve";
 
 export type AdminTableUser = Pick<
   SelectUser,
   "id" | "email" | "name" | "role" | "image" | "createdAt"
 >;
-
-// export type Article = {
-//   id: string;
-//   title: string;
-//   privacy: Privacy;
-//   author: string;
-//   createdAt: string;
-// };
-
-// type ColumnDefWithI18n = ColumnDef<AdminTableUser> & {
-//     options: {
-//         meta: {
-//           t: ReturnType<typeof createTranslator>;
-//         };
-//       };
-// };
-
-// HeaderContext<AdminTableUser, unknown>.table:
 
 export const columns: ColumnDef<AdminTableUser>[] = [
   {

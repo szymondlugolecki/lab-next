@@ -8,7 +8,6 @@ function fetchArticles() {
     columns: {
       id: true,
       privacy: true,
-      category: true,
       tags: true,
       language: true,
       title: true,

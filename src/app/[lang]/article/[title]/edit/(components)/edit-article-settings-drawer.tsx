@@ -41,12 +41,6 @@ export function EditArticleInfoDrawer({ children }: { children: ReactNode }) {
         </DrawerHeader>
 
         <div className="px-6 grid gap-4 py-4">{children}</div>
-
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
 

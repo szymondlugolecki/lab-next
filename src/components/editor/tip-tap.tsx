@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormStatus } from "react-dom";
-import { EditorProvider } from "@tiptap/react";
+import { EditorEvents, EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { CustomMenuBar } from "./custom-menu-bar";
 
@@ -34,8 +32,11 @@ import Mention from "@tiptap/extension-mention";
 
 import { mentionSuggestionOptions } from "./mentionSuggestionOptions";
 import { CustomBubbleMenu } from "./custom-bubble-menu";
-import { CustomEditorMenu } from "./custom-editor-menu";
-import type { JSONContent } from "@tiptap/react";
+// import { CustomEditorMenu } from "./custom-editor-menu";
+// import type { JSONContent } from "@tiptap/react";
+import editArticleContent from "@/lib/actions/article/edit/content";
+import { toast } from "sonner";
+import { useDebounceCallback } from "usehooks-ts";
 
 export default function Tiptap({
   id,
@@ -44,9 +45,31 @@ export default function Tiptap({
   id: string;
   fetchedContent?: string;
 }) {
-  const [contentJSON, setContentJSON] = useState<JSONContent>({});
-  const { pending } = useFormStatus();
-  console.log("pending", pending);
+  const saveContent = async (editor: EditorEvents["update"]["editor"]) => {
+    const articleJSON = editor.getJSON();
+    const promise = editArticleContent({
+      content: JSON.stringify(articleJSON),
+      id,
+    });
+
+    toast.promise(promise, {
+      loading: "",
+      success: () => {
+        return `Saved`;
+      },
+      error: "Failed to save",
+      duration: 1500,
+    });
+
+    const result = await promise;
+
+    const error = result?.data?.error || result?.serverError;
+    if (error) {
+      toast.error(error);
+    }
+  };
+
+  const debouncedOnChange = useDebounceCallback(saveContent, 3500);
 
   const extensions = [
     // Extensions
@@ -86,48 +109,15 @@ export default function Tiptap({
     Underline,
   ];
 
-  const content =
-    fetchedContent ||
-    `
-<h2>
-  Hi there,
-</h2>
-<p>
-  this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-</p>
-<ul>
-  <li>
-    That’s a bullet list with one …
-  </li>
-  <li>
-    … or two list items.
-  </li>
-</ul>
-<p>
-  Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-</p>
-<pre><code class="language-css">body {
-display: none;
-}</code></pre>
-<p>
-  I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-</p>
-<blockquote>
-  Wow, that’s amazing. Good work, boy! 👏
-  <br />
-  — Mom
-</blockquote>
-`;
-
   return (
-    // sm:flex sm:flex-row-reverse
     <div className="[&>*:second-child]:w-auto grid relative">
       <EditorProvider
         slotBefore={<CustomMenuBar />}
         extensions={extensions}
-        content={content}
-        onCreate={({ editor }) => setContentJSON(editor.getJSON())}
-        onUpdate={({ editor }) => setContentJSON(editor.getJSON())}
+        content={fetchedContent}
+        onUpdate={({ editor }) => {
+          debouncedOnChange(editor);
+        }}
         editorProps={{
           attributes: {
             class:
@@ -136,7 +126,6 @@ display: none;
         }}
       >
         <CustomBubbleMenu />
-        <CustomEditorMenu id={id} contentJSON={contentJSON} pending={pending} />
       </EditorProvider>
     </div>
   );

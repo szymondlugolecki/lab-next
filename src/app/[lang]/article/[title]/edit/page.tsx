@@ -26,7 +26,6 @@ const fetchArticle = async (parsedTitle: string) => {
       language: true,
       title: true,
       privacy: true,
-      category: true,
       tags: true,
     },
   });
@@ -42,12 +41,23 @@ export default async function EditArticlePage({
 }: {
   params: { lang: Language; title: string };
 }) {
-  const t = await getTranslations("Article");
-  const articleData = await fetchArticle(decodeURIComponent(params.title));
-  if (!articleData) {
+  const [translationsPromise, fetchArticlePromise] = await Promise.allSettled([
+    getTranslations("Article"),
+    fetchArticle(decodeURIComponent(params.title)),
+  ]);
+  if (
+    fetchArticlePromise.status === "rejected" ||
+    fetchArticlePromise.value === null
+  ) {
     throw new Error("Article not found");
   }
-  console.log("articleData", articleData);
+  if (translationsPromise.status === "rejected") {
+    throw new Error("Translations not found");
+  }
+
+  const t = translationsPromise.value;
+  const articleData = fetchArticlePromise.value;
+
   const articleContent = await fetchArticleHTML(getArticlePath(articleData.id));
 
   return (
@@ -86,8 +96,8 @@ export default async function EditArticlePage({
 
             <div className="pb-4"></div>
 
+            {/* Article Title */}
             <div className="flex justify-between gap-x-2 pb-4">
-              {/* Article Title */}
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                 {articleData.title}
               </h1>

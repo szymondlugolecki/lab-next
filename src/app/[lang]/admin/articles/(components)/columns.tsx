@@ -17,27 +17,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import {
-  COUNTRY_CODES_MAP,
-  Category,
-  Language,
-  Privacy,
-  ROLES,
-  Role,
-} from "@/lib/constants";
+import { COUNTRY_CODES_MAP, Language, Privacy } from "@/lib/constants";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type AdminTableArticle = Pick<
   SelectArticle,
-  | "id"
-  | "privacy"
-  | "category"
-  | "tags"
-  | "language"
-  | "title"
-  | "parsedTitle"
-  | "createdAt"
+  "id" | "privacy" | "tags" | "language" | "title" | "parsedTitle" | "createdAt"
 > & {
   author: Pick<
     SelectUser,
@@ -60,6 +46,9 @@ import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { useState } from "react";
 import { Sheet } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import removeArticle from "@/lib/actions/article/remove";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<AdminTableArticle>[] = [
   {
@@ -131,26 +120,12 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
 
               <DropdownMenuSeparator />
 
-              {/* Edit Article Info */}
-              {/* <EditArticleSheet
-                articleData={article}
-                lang={table.options.meta?.lang as Language}
-              >
-                <DropdownMenuItem className="p-0">
-                <button className="w-full px-2 py-1.5 hover:bg-muted relative flex select-none items-center rounded-sm text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground">
-                  {table.options.meta?.t("Table.articles.edit_article_info")}
-                </button>
-                </DropdownMenuItem>
-              </EditArticleSheet> */}
-
+              {/* Edit Article Settings & Content */}
               <DropdownMenuItem className="p-0">
                 <Link
                   href={{
                     pathname: "/article/[title]/edit",
                     params: { title: article.parsedTitle },
-                    // query: {
-                    //   redirectTo: "/admin/articles",
-                    // },
                   }}
                   className="w-full px-2 py-1.5"
                 >
@@ -158,18 +133,31 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
                 </Link>
               </DropdownMenuItem>
 
-              {/* Edit Article Content */}
-              {/* <DropdownMenuItem className="p-0">
-                <Link
-                  href={{
-                    pathname: "/article/[title]/edit",
-                    params: { title: article.parsedTitle },
+              <DropdownMenuSeparator />
+
+              {/* Remove Article (from the database only) */}
+              <DropdownMenuItem
+                className="text-red-400 focus:text-red-500 cursor-pointer"
+                asChild
+              >
+                <button
+                  className="w-full"
+                  onClick={async () => {
+                    const result = await removeArticle({
+                      id: article.id,
+                    });
+                    const error = result?.data?.error || result?.serverError;
+                    console.log("result", result);
+                    if (result?.data?.success) {
+                      toast("Sukces");
+                    } else if (error) {
+                      toast.error(error);
+                    }
                   }}
-                  className="w-full px-2 py-1.5"
                 >
-                  {table.options.meta?.t("Table.articles.edit_article_content")}
-                </Link>
-              </DropdownMenuItem> */}
+                  {table.options.meta?.t("Table.articles.remove")}
+                </button>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </Sheet>
@@ -216,25 +204,6 @@ export const columns: ColumnDef<AdminTableArticle>[] = [
     },
     cell: ({ getValue }) => {
       return <p className="font-medium">{getValue<string>()}</p>;
-    },
-  },
-  {
-    id: "category",
-    accessorKey: "category",
-    header: ({ column, table }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          {table.options.meta?.t("Table.articles.category")}
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ getValue, table }) => {
-      const category = getValue<Category>();
-      return <p>{table.options.meta?.t(`Categories.${category}`)}</p>;
     },
   },
   {

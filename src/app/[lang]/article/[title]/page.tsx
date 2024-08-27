@@ -5,11 +5,22 @@ import { and, eq } from "drizzle-orm";
 import { generateHTML } from "@tiptap/html";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
+import Heading from "@tiptap/extension-heading";
 import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import sanitizeHtml from "sanitize-html";
-import { attempt, getArticlePath } from "@/lib/utils";
+import { attempt, getArticlePath, isModerator } from "@/lib/utils";
 import { articlesTable } from "@/lib/db/tables/article";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/lib/i18n/navigation";
+import { Pencil } from "lucide-react";
+import { auth } from "@/lib/auth";
+import Emoji, { gitHubEmojis } from "@tiptap-pro/extension-emoji";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import Underline from "@tiptap/extension-underline";
+import TiptapLink from "@tiptap/extension-link";
+import StarterKit from "@tiptap/starter-kit";
 
 const getArticleContent = async (title: string) => {
   const result = await db.query.articlesTable.findFirst({
@@ -19,7 +30,6 @@ const getArticleContent = async (title: string) => {
       title: true,
       createdAt: true,
       privacy: true,
-      category: true,
     },
     with: {
       allowedUsers: {
@@ -66,33 +76,44 @@ const getArticleContent = async (title: string) => {
     "utf-8"
   );
   const contentParsed = JSON.parse(contentStringified);
-  //   console.log("contentBase64", contentBase64);
-  //   console.log("contentStringified", contentStringified);
-  const document = { type: "doc", content: contentParsed };
-  console.log("contentParsed", contentParsed);
-  console.log("document", document);
+  const isDocumentEmpty =
+    !contentParsed ||
+    (Array.isArray(contentParsed) && contentParsed.length === 0);
+  const document = isDocumentEmpty
+    ? { type: "doc", content: [] }
+    : contentParsed;
 
   return {
     data: {
       title: result.title,
       content: sanitizeHtml(
-        generateHTML(document, [Document, Paragraph, Text, Bold])
+        generateHTML(document, [
+          StarterKit,
+          Document,
+          Heading,
+          Paragraph,
+          Text,
+          Bold,
+          Emoji.configure({
+            emojis: gitHubEmojis,
+            enableEmoticons: true,
+          }),
+          TiptapLink,
+        ])
       ),
     },
   };
 };
 
-export default async function Article({
+export default async function ArticlePage({
   params,
 }: {
   params: { title: string; lang: Language };
 }) {
-  console.log("params", params);
-  const { data, error } = await getArticleContent(
-    decodeURIComponent(params.title)
-  );
+  const session = await auth();
+  const parsedTitle = decodeURIComponent(params.title);
+  const { data, error } = await getArticleContent(parsedTitle);
 
-  console.log("data", data);
   if (!data) {
     return <div>{error}</div>;
   }
@@ -103,7 +124,26 @@ export default async function Article({
         <div className="container px-6 mx-auto md:px-8 lg:px-12">
           <div className="max-w-3xl mx-auto">
             <div className="prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl p-5 focus:outline-none">
-              <h1>{data.title}</h1>
+              <div className="flex items-start gap-x-1">
+                <h1>{data.title}</h1>
+                {session?.user.role && isModerator(session.user.role) ? (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="mt-2.5 min-w-[36px] h-9"
+                    asChild
+                  >
+                    <Link
+                      href={{
+                        pathname: "/article/[title]/edit",
+                        params: { title: parsedTitle },
+                      }}
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </Link>
+                  </Button>
+                ) : null}
+              </div>
               <div dangerouslySetInnerHTML={{ __html: data.content }}></div>
             </div>
           </div>

@@ -4,11 +4,14 @@ import { Language, Locale, Role } from "./constants";
 import { JSONContent } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
+import Heading from "@tiptap/extension-heading";
 import Text from "@tiptap/extension-text";
 import Bold from "@tiptap/extension-bold";
 import sanitizeHtml from "sanitize-html";
 import { generateHTML } from "@tiptap/html";
 import { octokit } from "./server/clients";
+import Emoji, { gitHubEmojis } from "@tiptap-pro/extension-emoji";
+import StarterKit from "@tiptap/starter-kit";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -33,7 +36,7 @@ export const parseArticleTitle = (title: string) =>
   title
     .toString()
     .replaceAll("&", "and")
-    .split(/[ ,]+/)
+    .split(/[ ,|:]+/)
     .filter((x) => x)
     .join("-")
     .toLowerCase();
@@ -43,7 +46,7 @@ export const getURLFriendlyEmail = (email: string) => {
 };
 
 export const getArticlePath = (articleId: string) =>
-  `articles/${articleId}.json`;
+  `articles/${articleId}/article.json`;
 
 export const isModerator = (role: Role) => {
   return role === "moderator" || role === "admin";
@@ -83,10 +86,6 @@ export const getLanguageFromLocale = (locale: Locale): Language => {
   return "en";
 };
 
-// {
-//   content?: string[] | undefined;
-// }
-
 export const errorToToast = (error: string | Record<string, string[]>) => {
   if (typeof error === "string") {
     return [error];
@@ -98,7 +97,6 @@ export const errorToToast = (error: string | Record<string, string[]>) => {
 };
 
 export const fetchArticleHTML = async (path: string) => {
-  console.log("fetchArticleHTML", "path", path);
   const { data } = await octokit.request(
     "GET /repos/{owner}/{repo}/contents/{path}",
     {
@@ -119,18 +117,26 @@ export const fetchArticleHTML = async (path: string) => {
   const contentStringified = Buffer.from(data.content, "base64").toString(
     "utf-8"
   );
-  const jsonContent = JSON.parse(contentStringified);
-  const document = {
-    type: "doc",
-    content: [
-      {
-        type: "paragraph",
-        content: jsonContent,
-      },
-    ],
-  };
+  const contentParsed = JSON.parse(contentStringified);
+  const isDocumentEmpty =
+    !contentParsed ||
+    (Array.isArray(contentParsed) && contentParsed.length === 0);
+  const document = isDocumentEmpty
+    ? { type: "doc", content: [] }
+    : contentParsed;
 
   return sanitizeHtml(
-    generateHTML(document, [Document, Paragraph, Text, Bold])
+    generateHTML(document, [
+      StarterKit,
+      Document,
+      Heading,
+      Paragraph,
+      Text,
+      Bold,
+      Emoji.configure({
+        emojis: gitHubEmojis,
+        enableEmoticons: true,
+      }),
+    ])
   );
 };

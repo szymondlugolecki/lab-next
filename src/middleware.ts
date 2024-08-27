@@ -24,9 +24,7 @@ const authMiddleware = auth((req) => {
 
   // Protection against unauthorized access to admin panel
   const { role } = session?.user || {};
-  console.log(session?.user.name, session?.user.role);
   const ownerEmail = process.env.OWNER_EMAIL;
-  console.log("ownerEmail", session?.user.email, ownerEmail);
   if (RegExp(`^(/(${LOCALES.join("|")}))\/admin`).test(req.nextUrl.pathname)) {
     if (session?.user.email !== ownerEmail) {
       if (!role || !isModerator(role)) {

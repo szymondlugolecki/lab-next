@@ -1,37 +1,37 @@
-export type Category = (typeof CATEGORIES_MAP)[number]["value"];
-export const CATEGORIES_MAP = [
-  { key: "Autoimmune Disease", value: "autoimmune-disease" },
-  { key: "Cancer", value: "cancer" },
-  { key: "Cardiovascular Health", value: "cardiovascular-health" },
-  { key: "Brain Health", value: "brain-health" },
-  { key: "Diabetes & Blood Sugar", value: "diabetes-blood-sugar" },
-  { key: "Ear, Nose & Throat", value: "ear-nose-throat" },
-  { key: "Energy & Fatigue", value: "energy-fatigue" },
-  { key: "Eyes & Vision", value: "eyes-vision" },
-  { key: "Fat Loss", value: "fat-loss" },
-  { key: "Gut Health", value: "gut-health" },
-  { key: "Healthy Aging & Longevity", value: "healthy-aging-longevity" },
-  {
-    key: "Immunity & Infectious Disease",
-    value: "immunity-infectious-disease",
-  },
-  { key: "Joints & Bones", value: "joints-bones" },
-  { key: "Kidney & Urinary Health", value: "kidney-urinary-health" },
-  { key: "Liver Health", value: "liver-health" },
-  { key: "Lungs & Breathing", value: "lungs-breathing" },
-  { key: "Men’s Health", value: "mens-health" },
-  { key: "Mental Health", value: "mental-health" },
-  { key: "Pain & Inflammation", value: "pain-inflammation" },
-  { key: "Muscle Gain & Exercise", value: "muscle-gain-exercise" },
-  { key: "Oral Health", value: "oral-health" },
-  { key: "Other", value: "other" },
-  { key: "Pain", value: "pain" },
-  { key: "Pregnancy & Children", value: "pregnancy-children" },
-  { key: "Skin, Hair & Nails", value: "skin-hair-nails" },
-  { key: "Sleep", value: "sleep" },
-  { key: "Women’s Health", value: "womens-health" },
-] as const;
-export const CATEGORIES = CATEGORIES_MAP.map(({ value }) => value);
+// export type Category = (typeof CATEGORIES_MAP)[number]["value"];
+// export const CATEGORIES_MAP = [
+//   { key: "Autoimmune Disease", value: "autoimmune-disease" },
+//   { key: "Cancer", value: "cancer" },
+//   { key: "Cardiovascular Health", value: "cardiovascular-health" },
+//   { key: "Brain Health", value: "brain-health" },
+//   { key: "Diabetes & Blood Sugar", value: "diabetes-blood-sugar" },
+//   { key: "Ear, Nose & Throat", value: "ear-nose-throat" },
+//   { key: "Energy & Fatigue", value: "energy-fatigue" },
+//   { key: "Eyes & Vision", value: "eyes-vision" },
+//   { key: "Fat Loss", value: "fat-loss" },
+//   { key: "Gut Health", value: "gut-health" },
+//   { key: "Healthy Aging & Longevity", value: "healthy-aging-longevity" },
+//   {
+//     key: "Immunity & Infectious Disease",
+//     value: "immunity-infectious-disease",
+//   },
+//   { key: "Joints & Bones", value: "joints-bones" },
+//   { key: "Kidney & Urinary Health", value: "kidney-urinary-health" },
+//   { key: "Liver Health", value: "liver-health" },
+//   { key: "Lungs & Breathing", value: "lungs-breathing" },
+//   { key: "Men’s Health", value: "mens-health" },
+//   { key: "Mental Health", value: "mental-health" },
+//   { key: "Pain & Inflammation", value: "pain-inflammation" },
+//   { key: "Muscle Gain & Exercise", value: "muscle-gain-exercise" },
+//   { key: "Oral Health", value: "oral-health" },
+//   { key: "Other", value: "other" },
+//   { key: "Pain", value: "pain" },
+//   { key: "Pregnancy & Children", value: "pregnancy-children" },
+//   { key: "Skin, Hair & Nails", value: "skin-hair-nails" },
+//   { key: "Sleep", value: "sleep" },
+//   { key: "Women’s Health", value: "womens-health" },
+// ] as const;
+// export const CATEGORIES = CATEGORIES_MAP.map(({ value }) => value);
 
 export type Tag = (typeof TAGS_MAP)[number]["value"];
 export const TAGS_MAP = [

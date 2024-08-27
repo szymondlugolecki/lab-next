@@ -5,7 +5,7 @@ import { articlesTable } from "@/lib/db/tables/article";
 import { octokit } from "@/lib/server/clients";
 import { attempt, extractTextFromJSON, getArticlePath } from "@/lib/utils";
 import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 
 import { article$ } from "@/lib/schemas";
 import { moderatorAction } from "@/lib/server/safe-action";
@@ -19,7 +19,9 @@ import { moderatorAction } from "@/lib/server/safe-action";
 const editArticleContent = moderatorAction
   .schema(article$.edit().content)
   .action(async ({ parsedInput }) => {
-    const { id, content, language } = parsedInput;
+    const { id, content } = parsedInput;
+
+    console.log("edit article content action", content);
 
     const githubContentUpdate = octokit.createOrUpdateTextFile({
       owner: process.env.GH_REPO_OWNER,
@@ -61,7 +63,13 @@ const editArticleContent = moderatorAction
       };
     }
 
-    redirect(`/article/${databaseUpdateResult.value[0].parsedTitle}`);
+    // const parsedTitle = encodeURIComponent(
+    //   databaseUpdateResult.value[0].parsedTitle
+    // );
+
+    return {
+      success: true,
+    };
   });
 
 export default editArticleContent;

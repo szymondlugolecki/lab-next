@@ -1,5 +1,5 @@
-import { CATEGORIES, LOCALES, PRIVACY, ROLES, TAGS } from "@/lib/constants";
-import type { Category, Tag, Language } from "@/lib/constants";
+import { ROLES } from "@/lib/constants";
+import type { Language } from "@/lib/constants";
 import { z } from "zod";
 
 // export const create = (language: Language = "en") =>

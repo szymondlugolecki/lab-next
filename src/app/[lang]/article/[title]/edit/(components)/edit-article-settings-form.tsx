@@ -20,20 +20,15 @@ import { useTranslations } from "next-intl";
 import { article$ } from "@/lib/schemas";
 import { ArticleEditSettingsSchema } from "@/lib/schemas/article";
 import editArticleSettings from "@/lib/actions/article/edit/settings";
-import { CategoryCombobox } from "@/components/form/category-combobox";
 import { Asterisk } from "@/components/asterisk";
 import { SelectArticle } from "@/lib/db/tables/article";
 import { toast } from "sonner";
+import { useRouter } from "@/lib/i18n/navigation";
+import { DrawerClose, DrawerFooter } from "@/components/ui/drawer";
 
 export type EditInfoArticle = Pick<
   SelectArticle,
-  | "privacy"
-  | "category"
-  | "tags"
-  | "language"
-  | "title"
-  | "parsedTitle"
-  | "createdAt"
+  "privacy" | "tags" | "language" | "title" | "parsedTitle" | "createdAt"
 >;
 
 export function EditArticleSettingsForm({
@@ -44,6 +39,7 @@ export function EditArticleSettingsForm({
   lang: Locale;
 }) {
   const t = useTranslations("Article");
+  const router = useRouter();
 
   const form = useForm<ArticleEditSettingsSchema>({
     resolver: zodResolver(article$.edit(lang).settings),
@@ -57,8 +53,14 @@ export function EditArticleSettingsForm({
     console.log("error", error);
     if (error) {
       toast.error(error);
-    } else {
+    } else if (result?.data?.parsedTitle) {
       toast("Success");
+      router.push({
+        pathname: "/article/[title]/edit",
+        params: {
+          title: result.data.parsedTitle,
+        },
+      });
     }
   };
 
@@ -89,7 +91,7 @@ export function EditArticleSettingsForm({
         />
 
         {/* Category */}
-        <CategoryCombobox form={form} />
+        {/* <CategoryCombobox form={form} /> */}
 
         {/* Article Id */}
         <FormField
@@ -105,19 +107,29 @@ export function EditArticleSettingsForm({
           )}
         />
 
-        <div className="flex gap-x-3 justify-end">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => form.reset()}
-            disabled={form.formState.isSubmitting}
-          >
-            Reset
-          </Button>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {t("settings.save_changes")}
-          </Button>
-        </div>
+        <DrawerFooter>
+          <div className="flex gap-x-3 justify-end">
+            <DrawerClose asChild>
+              <Button variant="outline" className="grow">
+                Cancel
+              </Button>
+            </DrawerClose>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => form.reset()}
+              disabled={form.formState.isSubmitting || !form.formState.isDirty}
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting || !form.formState.isDirty}
+            >
+              {t("settings.save_changes")}
+            </Button>
+          </div>
+        </DrawerFooter>
       </form>
     </Form>
   );

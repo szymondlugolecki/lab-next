@@ -47,7 +47,6 @@
     "private_with_description": "Prywatny - moderacja",
     "privacy": "Ustawienia prywatności",
     "tags": "Tagi",
-    "category": "Kategoria",
 
     "content": {
       "create_article_button": "Utwórz Artykuł",
@@ -60,11 +59,8 @@
       "title_hints": "Tytuł powinien być krótki i zwięzły",
       "language_placeholder": "Wybierz język",
       "language_hints": "To język artykułu",
-      "category_hints": "Wybierz kategorię, która najlepiej opisuje ten artykuł",
       "tags_hints": "Dodaj tagi, które najlepiej opisują ten artykuł",
       "privacy_hints": "Wybierz, kto może zobaczyć ten artykuł",
-      "category_not_found": "Nie znaleziono kategorii",
-      "search_category": "Szukaj kategorii...",
       "save_changes": "Zapisz zmiany"
     }
   },
@@ -93,11 +89,10 @@
       "copy_article_id": "Kopiuj ID",
       "title": "Tytuł",
       "author": "Autor",
-      "category": "Kategoria",
       "privacy": "Ustawienia prywatności",
       "created_at": "Utworzono",
       "menu_actions": "Akcje",
-      "delete": "Usuń",
+      "remove": "Usuń artykuł",
       "search_articles": "Szukaj artykułów..."
     }
   },

@@ -31,7 +31,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 
 import { CATEGORIES_MAP, Category } from "@/lib/constants";
-import { ArticleEditInfoSchema } from "@/lib/schemas/article";
+import { ArticleEditSettingsSchema } from "@/lib/schemas/article";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Asterisk } from "../asterisk";
@@ -48,7 +48,7 @@ const categories = CATEGORIES_MAP.map(({ value, key }) => ({
   label: key,
 }));
 
-type FormReturn = z.infer<ArticleEditInfoSchema>;
+type FormReturn = ArticleEditSettingsSchema;
 
 export function CategoryCombobox({
   form,

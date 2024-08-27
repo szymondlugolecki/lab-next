@@ -14,20 +14,13 @@ import {
   relations,
 } from "drizzle-orm";
 import {
-  CATEGORIES_MAP,
   LANGUAGES_MAP,
   PRIVACY,
-  type Category,
   type Tag,
   type Language,
 } from "../../constants";
 import { usersTable } from "./user";
 import { commentsTable } from "./comment";
-
-const categories = CATEGORIES_MAP.map(({ value }) => value) as [
-  Category,
-  ...Category[]
-];
 
 const languages = LANGUAGES_MAP.map(({ value }) => value) as [
   Language,
@@ -45,7 +38,7 @@ export const articlesTable = sqliteTable("article", {
 
   language: text("language", { enum: languages }).notNull(),
 
-  category: text("category", { enum: categories }).notNull().default("other"),
+  // category: text("category", { enum: categories }).notNull().default("other"),
   tags: text("tags", { mode: "json" }).$type<Tag[]>().notNull().default([]),
 
   // "private" | "public" | "restricted"
