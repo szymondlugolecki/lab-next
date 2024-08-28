@@ -1,6 +1,53 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
 
-# ENV
+# Lab
+Personal medical blog built to help me develop my passion for medicine  
+STILL IN EARLY DEVELOPMENT!  
+
+## Features
+👥 User Management with Roles  
+📔 Articles (/w advanced privacy settings involing roles, etc.)  
+🔐 Login via Google  
+ℹ️ Internalization Support (English, Polish)  
+⚡ Fast & Built for the Edge (Cloudflare Workers)  
+
+To be added in the future:  
+📱 PWA (not yet)  
+🤖 AI powered functions (translation, suggestions, image generation)  
+
+## TODO:  
+[] Make the home page & search work  
+[] Add comments  
+[] Add user profile page  
+[] Fully develop article privacy settings (adding access for a specific user, etc.)  
+[] Add error pages  
+[] Fix some routes not being displayed correctly for unauthorized users  
+[] PWA  
+[] AI suggestions, image generation, translation  
+
+
+## Tech stack
+Next.js 14  
+Typescript  
+Auth.js  
+react-hook-form  
+Tailwind  
+Cloudflare Workers  
+DrizzleORM & Cloudflare D1  
+
+Other: shadcn, tiptap, next-intl, zod  
+  
+## Images
+![image](https://github.com/user-attachments/assets/066e3363-f630-4270-8e76-24c6d506a944)
+![image](https://github.com/user-attachments/assets/38b3d0f3-86fa-4e78-8f66-920a30db97ef)
+![image](https://github.com/user-attachments/assets/0feea564-430f-4e30-b907-c13d1b3cddc2)
+![image](https://github.com/user-attachments/assets/2e84140e-0870-49ad-82bc-155c9720840e)
+![image](https://github.com/user-attachments/assets/15443dad-d6c8-4420-b504-ecc67469f6b5)
+![image](https://github.com/user-attachments/assets/39ba87f5-d5af-42de-987e-aa761d84ec71)
+![image](https://github.com/user-attachments/assets/b98136ba-0717-4e53-8de3-7011925d9256)
+
+
+## ENV
 ```env
 # Auth
 AUTH_SECRET=""
