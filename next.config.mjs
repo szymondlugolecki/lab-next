@@ -9,8 +9,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 const withNextIntl = createNextIntlPlugin('./src/lib/i18n/index.ts');
 
-console.log('base path', process.env.NEXT_PUBLIC_BASE_URL)
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {

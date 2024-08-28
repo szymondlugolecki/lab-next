@@ -92,6 +92,20 @@ export const PRIVACY = [
   "restricted", // only authed users can see
   "private", // only the admin, mod, users with access can see
 ] as const;
+export const PRIVACY_MAP = [
+  {
+    key: "Public",
+    value: "public",
+  },
+  {
+    key: "Restricted",
+    value: "restricted",
+  },
+  {
+    key: "Private",
+    value: "private",
+  },
+] as const;
 
 export type Language = (typeof LANGUAGES_MAP)[number]["value"];
 export const LANGUAGES_MAP = [

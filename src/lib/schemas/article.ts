@@ -1,4 +1,4 @@
-import { LOCALES, PRIVACY, TAGS } from "@/lib/constants";
+import { LANGUAGES, LOCALES, PRIVACY, TAGS } from "@/lib/constants";
 import type { Tag, Language } from "@/lib/constants";
 import { z } from "zod";
 
@@ -45,6 +45,10 @@ export const edit = (language: Language = "en") => ({
     //   invalid_type_error: "Invalid category",
     //   required_error: "Category is required",
     // }),
+    language: z.enum(LANGUAGES as [Language, ...Language[]], {
+      invalid_type_error: "Invalid language",
+      required_error: "Language is required",
+    }),
     tags: z
       .array(
         z.enum(TAGS as [Tag, ...Tag[]], {

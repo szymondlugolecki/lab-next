@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Asterisk } from "@/components/asterisk";
 
 export function CreateArticleForm() {
   const { lang } = useParams<{ lang: Language }>();
@@ -82,7 +83,10 @@ export function CreateArticleForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="select-none">{t("title")}</FormLabel>
+              <FormLabel className="select-none">
+                {t("title")}
+                <Asterisk />
+              </FormLabel>
               <FormControl>
                 <input
                   placeholder={t("settings.title_placeholder")}
@@ -102,7 +106,10 @@ export function CreateArticleForm() {
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("language")}</FormLabel>
+              <FormLabel>
+                {t("language")}
+                <Asterisk />
+              </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
