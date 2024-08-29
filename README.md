@@ -10,6 +10,7 @@ STILL IN EARLY DEVELOPMENT!
 🔐 Login via Google  
 ℹ️ Internalization Support (English, Polish)  
 ⚡ Fast & Built for the Edge (Cloudflare Workers)  
+☁️ All articles are stored in a seperate repo on Github as JSON files
 
 To be added in the future:  
 📱 PWA (not yet)  
