@@ -40,6 +40,3 @@ next-env.d.ts
 # wrangler files
 .wrangler
 .dev.vars
-
-
-pnpm-lock.yaml
